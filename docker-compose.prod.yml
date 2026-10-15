@@ -52,8 +52,8 @@ services:
       S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:-}
       S3_FORCE_PATH_STYLE: ${S3_FORCE_PATH_STYLE:-true}
     ports:
-      # O backend escuta apenas em 127.0.0.1 da VPS para segurança; o Nginx/Caddy faz o proxy reverso público
-      - "127.0.0.1:3333:3333"
+      # O backend escuta na porta 3333 para proxy reverso do Nginx e chamadas externas
+      - "0.0.0.0:3333:3333"
     volumes:
       - api_uploads:/app/uploads
     networks:

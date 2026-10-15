@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <rect width="32" height="32" rx="6" fill="#111111"/>
+  <!-- Battery body -->
+  <rect x="5" y="8" width="20" height="18" rx="2" stroke="#FFFFFF" stroke-width="2" fill="#1A1A1A"/>
+  <!-- Battery terminal -->
+  <rect x="11" y="5" width="8" height="3" rx="1" fill="#C91525"/>
+  <!-- Star icon inside battery -->
+  <path d="M15 11L16.2 14.5H20L17 16.8L18.1 20.3L15 18.2L11.9 20.3L13 16.8L10 14.5H13.8L15 11Z" fill="#C91525"/>
+</svg>

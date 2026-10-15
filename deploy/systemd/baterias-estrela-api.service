@@ -1,0 +1,36 @@
+# ==============================================================================
+# Baterias Estrela - Unidade Systemd para Execução Direta (Sem Docker)
+# Arquivo: /etc/systemd/system/baterias-estrela-api.service
+# Comandos:
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable baterias-estrela-api
+#   sudo systemctl start baterias-estrela-api
+#   sudo systemctl status baterias-estrela-api
+# ==============================================================================
+
+[Unit]
+Description=Baterias Estrela - API Fastify Backend
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/baterias-estrela/apps/api
+EnvironmentFile=/var/www/baterias-estrela/.env.production
+ExecStart=/usr/bin/node dist/server.js
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=baterias-estrela-api
+
+# Limites de Recursos e Segurança de Processo
+LimitNOFILE=65536
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

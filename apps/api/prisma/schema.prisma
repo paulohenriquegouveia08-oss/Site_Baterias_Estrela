@@ -1,0 +1,290 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model AdminUser {
+  id                   String     @id @default(uuid())
+  email                String     @unique
+  passwordHash         String
+  name                 String
+  role                 String     @default("admin")
+  isActive             Boolean    @default(true)
+  resetPasswordToken   String?
+  resetPasswordExpires DateTime?
+  lastLoginAt          DateTime?
+  createdAt            DateTime   @default(now())
+  updatedAt            DateTime   @updatedAt
+  auditLogs            AdminAuditLog[]
+
+  @@map("admin_users")
+}
+
+model Category {
+  id          String            @id @default(uuid())
+  name        String
+  slug        String            @unique
+  description String?
+  displayOrder Int              @default(0)
+  status      String            @default("active") // active, inactive
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  products    ProductCategory[]
+
+  @@map("categories")
+}
+
+model Product {
+  id                String                  @id @default(uuid())
+  name              String
+  slug              String                  @unique
+  sku               String?
+  brand             String
+  description       String                  @db.Text
+  amperageAh        Float
+  voltageV          Int                     @default(12)
+  ccaA              Int?
+  dimensionsMm      String?
+  warrantyMonths    Int?
+  polarity          String                  @default("POSITIVE_RIGHT") // POSITIVE_RIGHT, POSITIVE_LEFT, CENTER
+  technology        String                  @default("SLI") // SLI, EFB, AGM, GEL, VRLA
+  isFeatured        Boolean                 @default(false)
+  stockStatus       String                  @default("in_stock") // in_stock, on_demand, out_of_stock
+  status            String                  @default("active") // active, archived, draft
+  internalCostNotes String?                 @db.Text // NOT exposed to public API!
+  deletedAt         DateTime?
+  createdAt         DateTime                @default(now())
+  updatedAt         DateTime                @updatedAt
+
+  images            ProductImage[]
+  categories        ProductCategory[]
+  compatibilities   ProductCompatibility[]
+  analyticsEvents   AnalyticsEvent[]
+
+  @@index([status])
+  @@index([brand])
+  @@index([amperageAh])
+  @@index([isFeatured])
+  @@map("products")
+}
+
+model ProductImage {
+  id           String   @id @default(uuid())
+  productId    String
+  url          String
+  fileKey      String?
+  altText      String?
+  displayOrder Int      @default(0)
+  isCover      Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  product      Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+  @@map("product_images")
+}
+
+model ProductCategory {
+  productId  String
+  categoryId String
+  createdAt  DateTime @default(now())
+
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([productId, categoryId])
+  @@map("product_categories")
+}
+
+model VehicleMake {
+  id        String         @id @default(uuid())
+  name      String         @unique
+  slug      String         @unique
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  models    VehicleModel[]
+
+  @@map("vehicle_makes")
+}
+
+model VehicleModel {
+  id        String           @id @default(uuid())
+  makeId    String
+  name      String
+  slug      String
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  make      VehicleMake      @relation(fields: [makeId], references: [id], onDelete: Cascade)
+  variants  VehicleVariant[]
+
+  @@unique([makeId, slug])
+  @@index([makeId])
+  @@map("vehicle_models")
+}
+
+model VehicleVariant {
+  id             String                 @id @default(uuid())
+  modelId        String
+  name           String
+  yearStart      Int
+  yearEnd        Int?
+  engine         String?
+  fuel           String?
+  version        String?
+  technicalNotes String?                @db.Text
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+
+  model          VehicleModel           @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  compatibilities ProductCompatibility[]
+
+  @@index([modelId])
+  @@index([yearStart, yearEnd])
+  @@map("vehicle_variants")
+}
+
+model ProductCompatibility {
+  id               String         @id @default(uuid())
+  productId        String
+  vehicleVariantId String
+  technicalNotes   String?        @db.Text
+  validationStatus String         @default("verified") // verified, pending, unverified
+  validationSource String?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  product          Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  vehicleVariant   VehicleVariant @relation(fields: [vehicleVariantId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, vehicleVariantId])
+  @@index([productId])
+  @@index([vehicleVariantId])
+  @@map("product_compatibilities")
+}
+
+model Service {
+  id              String            @id @default(uuid())
+  name            String
+  slug            String            @unique
+  description     String            @db.Text
+  iconName        String?
+  imageUrl        String?
+  regionServed    String            @default("Arapongas e região")
+  workingHours    String?
+  ctaText         String            @default("Solicitar Atendimento")
+  whatsappMessage String?           @db.Text
+  displayOrder    Int               @default(0)
+  status          String            @default("active") // active, inactive
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  serviceRequests ServiceRequest[]
+  analyticsEvents AnalyticsEvent[]
+
+  @@index([status])
+  @@map("services")
+}
+
+model ContactChannel {
+  id           String   @id @default(uuid())
+  label        String
+  number       String
+  type         String   @default("whatsapp") // whatsapp, phone
+  placement    String   @default("all") // header, footer, contact, services, all
+  isDefault    Boolean  @default(false)
+  displayOrder Int      @default(0)
+  status       String   @default("active") // active, inactive
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([status])
+  @@map("contact_channels")
+}
+
+model SiteSettings {
+  id               String   @id @default(uuid())
+  storeName        String   @default("Baterias Estrela")
+  tagline          String   @default("Sua loja de baterias automotivas em Arapongas")
+  address          String   @default("Rua Taperaçu 165, Vila Sampaio")
+  city             String   @default("Arapongas")
+  state            String   @default("PR")
+  postalCode       String?  @default("86700-000")
+  workingHours     String   @default("Segunda a Sexta: 08h às 18h | Sábado: 08h às 12h")
+  email            String?
+  facebookUrl      String?
+  instagramUrl     String?
+  googleMapsUrl    String?
+  homeHeroTitle    String?  @default("A Bateria Certa para o seu Veículo com Entrega e Instalação Grátis em Arapongas")
+  homeHeroSubtitle String?  @default("Trabalhamos com as melhores marcas do mercado. Socorro rápido, teste gratuito e garantia de fábrica.")
+  seoTitle         String?  @default("Baterias Estrela | Loja e Socorro de Baterias em Arapongas - PR")
+  seoDescription   String?  @default("Baterias automotivas Moura, Heliar, Bralmax e Zetta em Arapongas. Entrega e instalação rápida onde você estiver.")
+  updatedAt        DateTime @updatedAt
+
+  @@map("site_settings")
+}
+
+model AnalyticsEvent {
+  id             String    @id @default(uuid())
+  eventType      String    // page_view, product_view, catalog_search, vehicle_search, compatibility_result, whatsapp_click, phone_click, service_request_click, service_form_submit
+  path           String    @default("/")
+  productId      String?
+  serviceId      String?
+  sessionId      String
+  referrer       String?
+  utmSource      String?
+  utmMedium      String?
+  utmCampaign    String?
+  deviceCategory String    @default("desktop")
+  metadata       Json?
+  createdAt      DateTime  @default(now())
+
+  product        Product?  @relation(fields: [productId], references: [id], onDelete: SetNull)
+  service        Service?  @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+
+  @@index([eventType])
+  @@index([createdAt])
+  @@index([sessionId])
+  @@index([productId])
+  @@map("analytics_events")
+}
+
+model ServiceRequest {
+  id               String   @id @default(uuid())
+  name             String
+  phone            String
+  serviceId        String?
+  vehicle          String?
+  notes            String?  @db.Text
+  addressReference String?
+  status           String   @default("new") // new, contacted, completed
+  createdAt        DateTime @default(now())
+
+  service          Service? @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+
+  @@index([status])
+  @@index([createdAt])
+  @@map("service_requests")
+}
+
+model AdminAuditLog {
+  id          String     @id @default(uuid())
+  adminUserId String?
+  action      String     // CREATE, UPDATE, DELETE, LOGIN, EXPORT, IMPORT
+  entityType  String     // Product, Category, VehicleMake, etc.
+  entityId    String?
+  details     Json?
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime   @default(now())
+
+  adminUser   AdminUser? @relation(fields: [adminUserId], references: [id], onDelete: SetNull)
+
+  @@index([entityType])
+  @@index([createdAt])
+  @@map("admin_audit_logs")
+}

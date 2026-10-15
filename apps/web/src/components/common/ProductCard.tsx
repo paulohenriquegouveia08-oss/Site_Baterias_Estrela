@@ -1,0 +1,131 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { MessageCircle, Shield, Zap, CheckCircle2 } from 'lucide-react';
+import { PublicProduct, buildWhatsAppProductMessage, buildWhatsAppLink, formatWarrantyLabel, formatTechnologyLabel } from '@baterias-estrela/shared';
+import { useSite } from '../../contexts/SiteContext';
+import { handleWhatsAppClick } from '../../lib/analytics';
+
+interface ProductCardProps {
+  product: PublicProduct;
+  vehicleName?: string;
+}
+
+export const ProductCard: React.FC<ProductCardProps> = ({ product, vehicleName }) => {
+  const { defaultWhatsApp } = useSite();
+
+  const coverImage = product.images?.find((img) => img.isCover)?.url ||
+    product.images?.[0]?.url ||
+    'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=600&q=80';
+
+  const onConsultWhatsApp = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const msg = buildWhatsAppProductMessage({
+      productName: product.name,
+      sku: product.sku,
+      brand: product.brand,
+      amperageAh: product.amperageAh,
+      vehicleName: vehicleName || undefined,
+    });
+
+    const url = buildWhatsAppLink(defaultWhatsApp.number, msg);
+    handleWhatsAppClick(url, {
+      productId: product.id,
+      path: window.location.pathname,
+      metadata: { action: 'product_card_whatsapp_click' },
+    });
+  };
+
+  return (
+    <div className="group bg-estrela-dark border border-estrela-card hover:border-estrela-red/50 rounded-xl overflow-hidden flex flex-col transition-all duration-300 hover:shadow-xl hover:shadow-estrela-red/5">
+      {/* Imagem do Produto com Badges */}
+      <Link to={`/baterias/${product.slug}`} className="relative block aspect-[4/3] bg-estrela-card overflow-hidden">
+        <img
+          src={coverImage}
+          alt={product.name}
+          className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+          loading="lazy"
+        />
+
+        {/* Badges superiores */}
+        <div className="absolute top-3 left-3 flex flex-col gap-1.5 items-start">
+          {product.isFeatured && (
+            <span className="bg-estrela-red text-white text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded shadow">
+              Destaque
+            </span>
+          )}
+          {product.technology !== 'SLI' && (
+            <span className="bg-amber-500 text-black text-[11px] font-extrabold uppercase px-2 py-0.5 rounded shadow flex items-center gap-1">
+              <Zap className="w-3 h-3 fill-current" />
+              {product.technology}
+            </span>
+          )}
+        </div>
+
+        {/* Amperagem em destaque no canto inferior */}
+        <div className="absolute bottom-3 right-3 bg-estrela-black/85 backdrop-blur-sm border border-white/10 text-white font-extrabold text-sm px-2.5 py-1 rounded shadow flex items-center gap-1">
+          <Zap className="w-3.5 h-3.5 text-estrela-red fill-estrela-red" />
+          {product.amperageAh} Ah
+        </div>
+      </Link>
+
+      {/* Conteúdo Técnico */}
+      <div className="p-5 flex-1 flex flex-col justify-between">
+        <div>
+          {/* Marca e SKU */}
+          <div className="flex items-center justify-between text-xs text-estrela-gray-400 mb-1.5">
+            <span className="font-semibold text-estrela-gray-300 uppercase tracking-wider">{product.brand}</span>
+            {product.sku && <span className="font-mono text-estrela-gray-400">SKU: {product.sku}</span>}
+          </div>
+
+          {/* Nome */}
+          <Link to={`/baterias/${product.slug}`}>
+            <h3 className="text-base font-bold text-white group-hover:text-estrela-red transition line-clamp-2">
+              {product.name}
+            </h3>
+          </Link>
+
+          {/* Especificações resumidas */}
+          <div className="mt-3 grid grid-cols-2 gap-2 text-xs text-estrela-gray-300 bg-estrela-card/60 p-2.5 rounded-lg border border-white/5">
+            <div>
+              <span className="block text-[10px] text-estrela-gray-400 uppercase">Tecnologia</span>
+              <span className="font-medium text-white">{formatTechnologyLabel(product.technology)}</span>
+            </div>
+            {product.ccaA && (
+              <div>
+                <span className="block text-[10px] text-estrela-gray-400 uppercase">Corrente (CCA)</span>
+                <span className="font-medium text-white">{product.ccaA} A</span>
+              </div>
+            )}
+            <div>
+              <span className="block text-[10px] text-estrela-gray-400 uppercase">Garantia</span>
+              <span className="font-medium text-white flex items-center gap-1">
+                <Shield className="w-3 h-3 text-emerald-400" />
+                {formatWarrantyLabel(product.warrantyMonths)}
+              </span>
+            </div>
+            <div>
+              <span className="block text-[10px] text-estrela-gray-400 uppercase">Status</span>
+              <span className="font-medium text-emerald-400 flex items-center gap-1">
+                <CheckCircle2 className="w-3 h-3" />
+                Em Estoque
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Ação: Botão Consultar WhatsApp (SEM PREÇO PÚBLICO!) */}
+        <div className="mt-5 pt-4 border-t border-estrela-card/80">
+          <button
+            onClick={onConsultWhatsApp}
+            className="w-full py-2.5 px-4 rounded-lg bg-estrela-red hover:bg-estrela-red-hover text-white text-sm font-bold transition flex items-center justify-center gap-2 shadow-md shadow-estrela-red/10 active:scale-95 group/btn"
+          >
+            <MessageCircle className="w-4 h-4 fill-white" />
+            <span>Consultar Preço no WhatsApp</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};

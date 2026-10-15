@@ -1,0 +1,20 @@
+{
+  "name": "baterias-estrela-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm --parallel --filter @baterias-estrela/api --filter @baterias-estrela/web dev",
+    "dev:api": "pnpm --filter @baterias-estrela/api dev",
+    "dev:web": "pnpm --filter @baterias-estrela/web dev",
+    "build": "pnpm --filter @baterias-estrela/shared build && pnpm --filter @baterias-estrela/api build && pnpm --filter @baterias-estrela/web build",
+    "test": "pnpm --filter @baterias-estrela/shared test && pnpm --filter @baterias-estrela/api test",
+    "db:generate": "pnpm --filter @baterias-estrela/api prisma:generate",
+    "db:migrate": "pnpm --filter @baterias-estrela/api prisma:migrate",
+    "db:seed": "pnpm --filter @baterias-estrela/api prisma:seed",
+    "admin:create": "pnpm --filter @baterias-estrela/api admin:create"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
+}

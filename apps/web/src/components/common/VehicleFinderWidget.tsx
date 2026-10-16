@@ -13,7 +13,8 @@ import { ProductCard } from './ProductCard';
 import { BatteryLoader } from './BatteryLoader';
 import { useSite } from '../../contexts/SiteContext';
 import { trackEvent, handleWhatsAppClick } from '../../lib/analytics';
-import { Search, RotateCcw, AlertTriangle, MessageCircle, ChevronRight } from 'lucide-react';
+import { WhatsAppIcon } from './WhatsAppIcon';
+import { Search, RotateCcw, AlertTriangle, ChevronRight } from 'lucide-react';
 
 interface VehicleFinderWidgetProps {
   initialCompact?: boolean;
@@ -303,9 +304,7 @@ export const VehicleFinderWidget: React.FC<VehicleFinderWidgetProps> = () => {
             ) : (
               /* Caso NÃO haja compatibilidade cadastrada / validada */
               <div className="p-6 sm:p-8 rounded-2xl bg-estrela-card/60 border border-white/10 text-center max-w-2xl mx-auto space-y-4">
-                <div className="w-12 h-12 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 mx-auto flex items-center justify-center">
-                  <AlertTriangle className="w-6 h-6" />
-                </div>
+                <AlertTriangle className="w-8 h-8 text-amber-400 mx-auto" />
                 <h3 className="text-lg font-bold text-white">
                   Não foi possível confirmar a compatibilidade exata
                 </h3>
@@ -315,9 +314,9 @@ export const VehicleFinderWidget: React.FC<VehicleFinderWidgetProps> = () => {
                 <div className="pt-2">
                   <button
                     onClick={handleConsultVehicleWhatsApp}
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-estrela-red hover:bg-estrela-red-hover text-white text-sm font-bold shadow-lg shadow-estrela-red/20 transition active:scale-95"
+                    className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-[#25D366] hover:bg-[#20ba59] text-white text-sm font-bold shadow-lg shadow-[#25D366]/20 transition active:scale-95"
                   >
-                    <MessageCircle className="w-4 h-4 fill-white" />
+                    <WhatsAppIcon className="w-4 h-4 fill-white" />
                     <span>Consultar Técnico pelo WhatsApp</span>
                     <ChevronRight className="w-4 h-4" />
                   </button>

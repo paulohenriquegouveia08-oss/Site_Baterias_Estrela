@@ -54,7 +54,7 @@ export const PrivacyPage: React.FC = () => {
         <section className="space-y-2">
           <h2 className="text-lg font-bold text-white">4. Preços e Contato Comercial</h2>
           <p>
-            Como parte de nossa política comercial em Arapongas e para garantir que o cliente receba a melhor oferta considerando o desconto da sucata da bateria usada, <strong>não divulgamos preços públicos estáticos</strong>. Todas as cotações são fornecidas diretamente por nossa equipe pelo WhatsApp ou por telefone.
+            Como parte de nossa política comercial em Arapongas e para garantir que o cliente receba a especificação correta com entrega e instalação técnica inclusas, <strong>não divulgamos preços públicos estáticos</strong>. Todas as cotações são fornecidas diretamente por nossa equipe pelo WhatsApp ou por telefone.
           </p>
         </section>
 

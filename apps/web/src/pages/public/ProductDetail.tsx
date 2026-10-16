@@ -15,11 +15,11 @@ import { BatteryLoader } from '../../components/common/BatteryLoader';
 import { ProductCard } from '../../components/common/ProductCard';
 import { useSite } from '../../contexts/SiteContext';
 import { trackEvent, handleWhatsAppClick } from '../../lib/analytics';
+import { WhatsAppIcon } from '../../components/common/WhatsAppIcon';
 import {
   Zap,
   Shield,
   Truck,
-  MessageCircle,
   Car,
   ChevronRight,
   ShieldAlert,
@@ -125,7 +125,7 @@ export const ProductDetail: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
         {/* Galeria de Fotos */}
         <div className="space-y-4">
-          <div className="relative aspect-[4/3] bg-estrela-dark border border-estrela-card rounded-2xl overflow-hidden shadow-2xl flex items-center justify-center">
+          <div className="relative aspect-[4/3] bg-estrela-dark border border-white/10 rounded-2xl overflow-hidden shadow-2xl flex items-center justify-center">
             <img
               src={activeImage}
               alt={product.name}
@@ -136,7 +136,7 @@ export const ProductDetail: React.FC = () => {
                 Destaque
               </span>
             )}
-            <div className="absolute bottom-4 right-4 bg-estrela-black/85 backdrop-blur-md border border-white/10 text-white font-black text-base px-3 py-1.5 rounded-lg shadow-lg flex items-center gap-1.5">
+            <div className="absolute bottom-4 right-4 bg-estrela-black/90 backdrop-blur-md border border-white/10 text-white font-black text-base px-3 py-1.5 rounded-lg shadow-lg flex items-center gap-1.5">
               <Zap className="w-4 h-4 text-estrela-red fill-estrela-red" />
               {product.amperageAh} Ah
             </div>
@@ -149,8 +149,8 @@ export const ProductDetail: React.FC = () => {
                 <button
                   key={img.id}
                   onClick={() => setActiveImageIndex(idx)}
-                  className={`w-20 h-20 rounded-xl overflow-hidden border-2 transition shrink-0 ${
-                    activeImageIndex === idx ? 'border-estrela-red scale-105' : 'border-estrela-card opacity-60 hover:opacity-100'
+                  className={`w-20 h-20 rounded-xl overflow-hidden border transition shrink-0 ${
+                    activeImageIndex === idx ? 'border-estrela-red scale-105' : 'border-white/10 opacity-60 hover:opacity-100'
                   }`}
                 >
                   <img src={img.url} alt={img.altText || product.name} className="w-full h-full object-cover" />
@@ -159,14 +159,14 @@ export const ProductDetail: React.FC = () => {
             </div>
           )}
 
-          {/* Destaque Comercial de Instalação */}
-          <div className="p-4 rounded-xl bg-estrela-dark border border-white/10 flex items-center gap-4">
-            <div className="w-10 h-10 rounded-lg bg-estrela-red/10 border border-estrela-red/20 text-estrela-red flex items-center justify-center shrink-0">
-              <Truck className="w-5 h-5" />
-            </div>
+          {/* Destaque Técnico de Instalação e Memória */}
+          <div className="p-4 rounded-xl bg-estrela-dark border border-white/10 flex items-start gap-3">
+            <Truck className="w-5 h-5 text-estrela-red shrink-0 mt-0.5" />
             <div className="text-xs">
-              <span className="font-bold text-white block">Entrega e Instalação em Arapongas</span>
-              <span className="text-estrela-gray-400">Levamos e instalamos na sua casa ou trabalho sem custo adicional de taxa de entrega.</span>
+              <span className="font-bold text-white block">Entrega e Troca Técnica em Arapongas</span>
+              <span className="text-estrela-gray-300">
+                Levamos até você e utilizamos bateria auxiliar durante a substituição para preservar as memórias de injeção e áudio do veículo.
+              </span>
             </div>
           </div>
         </div>
@@ -180,7 +180,7 @@ export const ProductDetail: React.FC = () => {
               <span>•</span>
               <span className="text-emerald-400 font-medium flex items-center gap-1">
                 <CheckCircle2 className="w-3.5 h-3.5" />
-                Disponível na Loja
+                Pronta Entrega na Loja
               </span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white leading-tight">
@@ -197,10 +197,10 @@ export const ProductDetail: React.FC = () => {
           <div>
             <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-3 flex items-center gap-2">
               <Zap className="w-4 h-4 text-estrela-red" />
-              Especificações Técnicas Oficiais
+              Especificações Técnicas
             </h3>
 
-            <div className="rounded-xl border border-estrela-card overflow-hidden bg-estrela-dark divide-y divide-estrela-card text-xs">
+            <div className="rounded-xl border border-white/10 overflow-hidden bg-estrela-dark divide-y divide-white/5 text-xs">
               <div className="grid grid-cols-2 p-3">
                 <span className="text-estrela-gray-400">Capacidade Nominal (C20)</span>
                 <span className="font-bold text-white">{product.amperageAh} Ah</span>
@@ -239,25 +239,25 @@ export const ProductDetail: React.FC = () => {
             </div>
           </div>
 
-          {/* CTA WHATSAPP (SEM PREÇO PÚBLICO) */}
-          <div className="p-6 rounded-2xl bg-gradient-to-br from-estrela-dark to-estrela-card border border-estrela-red/40 space-y-4 shadow-xl">
+          {/* CTA WHATSAPP (SEM PREÇO PÚBLICO E COM COR OFICIAL) */}
+          <div className="p-6 rounded-2xl bg-estrela-dark border border-white/10 space-y-4 shadow-xl">
             <div>
               <span className="text-xs font-bold uppercase tracking-wider text-estrela-red">
                 Atendimento Direto da Loja
               </span>
               <h4 className="text-lg font-bold text-white mt-0.5">
-                Consulte o Preço com Desconto da sua Sucata
+                Consulte Preço e Instalação Grátis em Arapongas
               </h4>
               <p className="text-xs text-estrela-gray-400 mt-1">
-                Entregamos e instalamos gratuitamente em qualquer bairro de Arapongas. Resposta imediata no WhatsApp!
+                Entregamos e instalamos gratuitamente em qualquer bairro de Arapongas. Tire dúvidas e consulte condições no WhatsApp.
               </p>
             </div>
 
             <button
               onClick={onConsultWhatsApp}
-              className="w-full py-4 px-6 rounded-xl bg-estrela-red hover:bg-estrela-red-hover text-white text-base font-bold transition flex items-center justify-center gap-3 shadow-xl shadow-estrela-red/25 active:scale-95"
+              className="w-full py-4 px-6 rounded-xl bg-[#25D366] hover:bg-[#20ba59] text-white text-base font-extrabold transition flex items-center justify-center gap-3 shadow-xl shadow-[#25D366]/20 active:scale-95"
             >
-              <MessageCircle className="w-5 h-5 fill-white" />
+              <WhatsAppIcon className="w-5 h-5 fill-white" />
               <span>Consultar Preço e Disponibilidade no WhatsApp</span>
             </button>
           </div>
@@ -266,7 +266,7 @@ export const ProductDetail: React.FC = () => {
 
       {/* COMPATIBILIDADES VEICULARES VALIDADAS */}
       {product.compatibilities && product.compatibilities.length > 0 && (
-        <section className="bg-estrela-dark border border-estrela-card rounded-2xl p-6 sm:p-8 space-y-6">
+        <section className="bg-estrela-dark border border-white/10 rounded-2xl p-6 sm:p-8 space-y-6">
           <div className="flex items-center gap-2">
             <Car className="w-5 h-5 text-estrela-red" />
             <h3 className="text-xl font-bold text-white">

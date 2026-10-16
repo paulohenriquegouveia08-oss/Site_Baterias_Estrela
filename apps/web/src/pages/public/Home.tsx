@@ -6,6 +6,7 @@ import { PublicProduct, PublicCategory, PublicService, buildWhatsAppLink } from 
 import { ProductCard } from '../../components/common/ProductCard';
 import { VehicleFinderWidget } from '../../components/common/VehicleFinderWidget';
 import { BatteryLoader } from '../../components/common/BatteryLoader';
+import { WhatsAppIcon } from '../../components/common/WhatsAppIcon';
 import { useSite } from '../../contexts/SiteContext';
 import { trackEvent, handleWhatsAppClick } from '../../lib/analytics';
 import {
@@ -13,11 +14,11 @@ import {
   ShieldCheck,
   Truck,
   Gauge,
-  MessageCircle,
   ChevronRight,
   ShieldAlert,
   MapPin,
   Check,
+  Clock,
 } from 'lucide-react';
 
 export const Home: React.FC = () => {
@@ -48,71 +49,65 @@ export const Home: React.FC = () => {
   const onConsultWhatsApp = () => {
     const url = buildWhatsAppLink(
       defaultWhatsApp.number,
-      'Olá! Gostaria de consultar preços e baterias disponíveis na loja de Arapongas.'
+      'Olá! Gostaria de consultar preços e baterias disponíveis na Baterias Estrela em Arapongas.'
     );
     handleWhatsAppClick(url, { path: '/', metadata: { action: 'hero_whatsapp_click' } });
   };
 
+  const googleMapsUrl = 'https://www.google.com/maps/search/?api=1&query=Rua+Tapera%C3%A7u+165+Vila+Sampaio+Arapongas+PR';
+
   return (
     <div className="space-y-16 lg:space-y-24 pb-16">
       {/* HERO SECTION */}
-      <section className="relative overflow-hidden pt-8 pb-16 lg:pt-16 lg:pb-24 border-b border-estrela-dark">
-        {/* Glow de fundo sutil */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-estrela-red/10 blur-[130px] rounded-full pointer-events-none" />
-
+      <section className="relative overflow-hidden pt-8 pb-14 lg:pt-14 lg:pb-20 border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="max-w-3xl space-y-6">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-estrela-dark border border-white/10 text-xs font-semibold text-estrela-gray-300">
-              <span className="w-2 h-2 rounded-full bg-estrela-red animate-pulse" />
-              <span>Arapongas e Região - Loja Física e Socorro Móvel</span>
-            </div>
-
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight uppercase leading-[1.1]">
               A Bateria Certa para o seu Carro{' '}
-              <span className="text-estrela-red">sem Sair de Casa</span>
+              <span className="text-estrela-red">com Instalação Técnica</span>
             </h1>
 
             <p className="text-base sm:text-lg text-estrela-gray-300 leading-relaxed font-normal">
-              Trabalhamos com marcas líderes como <strong>Moura</strong>, <strong>Heliar</strong>, <strong>Bralmax</strong> e <strong>Zetta</strong>. 
-              Entrega e instalação técnica gratuita em toda Arapongas com teste computadorizado do alternador.
+              Trabalhamos com marcas consagradas como <strong>Moura</strong>, <strong>Heliar</strong>, <strong>Bralmax</strong> e <strong>Zetta</strong>. 
+              Entrega e instalação gratuita em Arapongas com teste de carga e preservação da memória de bordo.
             </p>
 
             <div className="flex flex-wrap items-center gap-4 pt-2">
               <button
                 onClick={onConsultWhatsApp}
-                className="px-6 py-3.5 rounded-xl bg-estrela-red hover:bg-estrela-red-hover text-white font-bold text-sm sm:text-base flex items-center gap-2.5 shadow-xl shadow-estrela-red/20 transition active:scale-95"
+                className="px-6 py-3.5 rounded-xl bg-[#25D366] hover:bg-[#20ba59] text-white font-bold text-sm sm:text-base flex items-center gap-2.5 shadow-lg shadow-[#25D366]/20 transition active:scale-95"
               >
-                <MessageCircle className="w-5 h-5 fill-white" />
-                <span>Consultar Bateria pelo WhatsApp</span>
+                <WhatsAppIcon className="w-5 h-5 fill-white" />
+                <span>Consultar Bateria no WhatsApp</span>
               </button>
 
               <Link
                 to="/socorro"
-                className="px-6 py-3.5 rounded-xl bg-estrela-dark hover:bg-white/10 border border-white/15 text-white font-semibold text-sm sm:text-base flex items-center gap-2 transition"
+                className="px-6 py-3.5 rounded-xl bg-estrela-red hover:bg-estrela-red-hover text-white font-bold text-sm sm:text-base flex items-center gap-2 transition shadow-md"
               >
-                <ShieldAlert className="w-5 h-5 text-estrela-red" />
-                <span>Precisa de Socorro Rápido?</span>
+                <ShieldAlert className="w-5 h-5" />
+                <span>Socorro de Bateria (8h às 19h)</span>
               </Link>
             </div>
 
-            {/* Micro badges de garantia e entrega */}
-            <div className="pt-4 flex flex-wrap items-center gap-6 text-xs text-estrela-gray-400">
-              <span className="flex items-center gap-1.5">
+            {/* Diferenciais diretos */}
+            <div className="pt-2 flex flex-wrap items-center gap-6 text-xs text-estrela-gray-300">
+              <span className="flex items-center gap-1.5 font-medium">
                 <Check className="w-4 h-4 text-emerald-400" /> Entrega Grátis em Arapongas
               </span>
-              <span className="flex items-center gap-1.5">
-                <Check className="w-4 h-4 text-emerald-400" /> Instalação com Protetor de Memória
+              <span className="flex items-center gap-1.5 font-medium">
+                <Check className="w-4 h-4 text-emerald-400" /> Bateria Auxiliar p/ Memória do Carro
               </span>
-              <span className="flex items-center gap-1.5">
-                <Check className="w-4 h-4 text-emerald-400" /> Teste do Alternador Gratuito
+              <span className="flex items-center gap-1.5 font-medium">
+                <Check className="w-4 h-4 text-emerald-400" /> Teste de Alternador no Local
               </span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* BUSCA TÉCNICA POR VEÍCULO EM DESTAQUE */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-10">
+      {/* BUSCA TÉCNICA POR VEÍCULO */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-10">
         <VehicleFinderWidget />
       </section>
 
@@ -122,13 +117,13 @@ export const Home: React.FC = () => {
           <div>
             <div className="text-xs font-bold text-estrela-red uppercase tracking-wider mb-1 flex items-center gap-1.5">
               <Zap className="w-4 h-4" />
-              <span>Garantia de Qualidade e Partida Imediata</span>
+              <span>Pronta Entrega com Instalação</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
               Baterias Automotivas em Destaque
             </h2>
             <p className="text-sm text-estrela-gray-400 mt-1">
-              Consulte condições especiais, garantia de até 2 anos e bônus na troca pela sua sucata.
+              Modelos novos de alta durabilidade com garantia oficial de fábrica e entrega rápida.
             </p>
           </div>
 
@@ -157,10 +152,10 @@ export const Home: React.FC = () => {
       {/* CATEGORIAS CADASTRADAS */}
       {categoriesData?.data && categoriesData.data.length > 0 && (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-xl mx-auto mb-10">
-            <h2 className="text-2xl font-extrabold text-white">Categorias e Aplicações</h2>
+          <div className="max-w-xl mb-8">
+            <h2 className="text-2xl font-extrabold text-white">Linhas por Aplicação</h2>
             <p className="text-sm text-estrela-gray-400 mt-1">
-              Encontre o modelo ideal para o porte e tecnologia elétrica do seu veículo.
+              Baterias específicas para a tecnologia e demanda elétrica do seu veículo.
             </p>
           </div>
 
@@ -169,12 +164,10 @@ export const Home: React.FC = () => {
               <Link
                 key={cat.id}
                 to={`/baterias?categoryId=${cat.id}`}
-                className="group p-5 rounded-xl bg-estrela-dark border border-estrela-card hover:border-estrela-red/50 transition flex flex-col justify-between"
+                className="group p-5 rounded-xl bg-estrela-dark border border-white/10 hover:border-estrela-red/50 transition flex flex-col justify-between"
               >
                 <div>
-                  <div className="w-10 h-10 rounded-lg bg-estrela-card flex items-center justify-center text-estrela-red mb-3 group-hover:bg-estrela-red group-hover:text-white transition">
-                    <Zap className="w-5 h-5" />
-                  </div>
+                  <Zap className="w-5 h-5 text-estrela-red mb-2" />
                   <h3 className="text-base font-bold text-white group-hover:text-estrela-red transition">
                     {cat.name}
                   </h3>
@@ -185,7 +178,7 @@ export const Home: React.FC = () => {
                   )}
                 </div>
                 <div className="mt-4 flex items-center justify-between text-xs font-semibold text-estrela-gray-400 group-hover:text-white">
-                  <span>Explorar modelos</span>
+                  <span>Ver modelos</span>
                   <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition" />
                 </div>
               </Link>
@@ -195,44 +188,45 @@ export const Home: React.FC = () => {
       )}
 
       {/* SERVIÇOS ATIVOS */}
-      <section className="bg-estrela-dark/40 py-16 border-y border-estrela-dark">
+      <section className="bg-estrela-dark/60 py-16 border-y border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl mb-12">
             <div className="text-xs font-bold text-estrela-red uppercase tracking-wider mb-1 flex items-center gap-1.5">
               <Truck className="w-4 h-4" />
-              <span>Atendimento em Arapongas e Região</span>
+              <span>Atendimento em Arapongas</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
-              Serviços Automotivos Especializados
+              Serviços Especializados da Loja
             </h2>
             <p className="text-sm text-estrela-gray-400 mt-1">
-              Mais do que vender baterias: prestamos suporte técnico completo para você nunca ficar a pé.
+              Atendimento técnico no balcão e socorro móvel das 08h às 19h.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {servicesData?.data.map((srv) => (
               <div
                 key={srv.id}
-                className="bg-estrela-dark border border-estrela-card rounded-xl p-6 flex flex-col justify-between hover:border-white/20 transition"
+                className="bg-estrela-dark border border-white/10 rounded-xl p-6 flex flex-col justify-between hover:border-white/20 transition"
               >
                 <div>
-                  <div className="w-12 h-12 rounded-xl bg-estrela-card border border-white/5 flex items-center justify-center text-estrela-red mb-4">
+                  <div className="text-estrela-red mb-3">
                     {srv.iconName === 'Zap' ? <Zap className="w-6 h-6" /> :
                      srv.iconName === 'Truck' ? <Truck className="w-6 h-6" /> :
                      srv.iconName === 'Gauge' ? <Gauge className="w-6 h-6" /> :
                      <ShieldCheck className="w-6 h-6" />}
                   </div>
                   <h3 className="text-base font-bold text-white mb-2">{srv.name}</h3>
-                  <p className="text-xs text-estrela-gray-400 leading-relaxed">{srv.description}</p>
+                  <p className="text-xs text-estrela-gray-300 leading-relaxed">{srv.description}</p>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-estrela-card">
+                <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
+                  <span className="text-[11px] text-estrela-gray-400">{srv.regionServed}</span>
                   <Link
                     to="/servicos"
                     className="text-xs font-bold text-estrela-red hover:underline flex items-center gap-1"
                   >
-                    <span>{srv.ctaText || 'Saiba mais'}</span>
+                    <span>Detalhes</span>
                     <ChevronRight className="w-3.5 h-3.5" />
                   </Link>
                 </div>
@@ -242,74 +236,88 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* DIFERENCIAIS VERDADEIROS DE ARAPONGAS */}
+      {/* DIFERENCIAIS VERDADEIROS E MAPA CLICÁVEL DO GOOGLE MAPS */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-gradient-to-r from-estrela-dark via-estrela-card to-estrela-dark border border-white/10 rounded-2xl p-8 sm:p-12">
+        <div className="bg-estrela-dark border border-white/10 rounded-2xl p-6 sm:p-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            {/* Informações Técnicas e Diferenciais */}
             <div className="space-y-4">
               <span className="text-xs font-bold uppercase tracking-widest text-estrela-red">
-                Por que escolher a Baterias Estrela?
+                Diferenciais da Loja
               </span>
               <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
-                Compromisso com sua Segurança e Economia em Arapongas
+                Baterias Estrela Mendes em Arapongas
               </h2>
               <p className="text-sm text-estrela-gray-300 leading-relaxed">
-                Nossa loja é referência no fornecimento de acumuladores elétricos na cidade. Seguimos rigorosamente as especificações do fabricante do seu veículo, evitando danos à injeção eletrônica e aos módulos de bordo.
+                Toda instalação é feita com bateria auxiliar conectada, garantindo que o computador de bordo, o rádio, os vidros elétricos e o câmbio do seu carro não percam a memória de configuração.
               </p>
 
               <div className="pt-2 space-y-2.5 text-sm text-estrela-gray-300">
-                <div className="flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
-                    <Check className="w-3.5 h-3.5" />
-                  </div>
-                  <span><strong>Sem surpresas no preço:</strong> Orçamento claro e transparente pelo WhatsApp.</span>
+                <div className="flex items-center gap-2.5">
+                  <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span><strong>Sem surpresas:</strong> Orçamento claro e transparente pelo WhatsApp.</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
-                    <Check className="w-3.5 h-3.5" />
-                  </div>
-                  <span><strong>Desconto na sucata:</strong> Sua bateria usada vale desconto imediato na compra da nova.</span>
+                <div className="flex items-center gap-2.5">
+                  <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span><strong>Preservação de Memória:</strong> Bateria auxiliar conectada durante a substituição.</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
-                    <Check className="w-3.5 h-3.5" />
-                  </div>
-                  <span><strong>Diagnóstico honesto:</strong> Só trocamos sua bateria se ela realmente estiver condenada.</span>
+                <div className="flex items-center gap-2.5">
+                  <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span><strong>Diagnóstico Preciso:</strong> Só trocamos sua bateria se ela realmente não segurar carga.</span>
                 </div>
               </div>
-            </div>
 
-            {/* Card Localização e Contato */}
-            <div className="bg-estrela-black/80 border border-white/10 rounded-xl p-6 sm:p-8 space-y-5">
-              <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-estrela-red" />
-                <span>Venha nos Visitar</span>
-              </h3>
-              <p className="text-sm text-estrela-gray-300">
-                {settings.address || 'Rua Taperaçu 165, Vila Sampaio'}<br />
-                {settings.city || 'Arapongas'} - {settings.state || 'PR'}
-              </p>
-              <div className="text-xs text-estrela-gray-400 border-t border-white/10 pt-3">
-                <strong>Horário de Funcionamento:</strong><br />
-                {settings.workingHours || 'Segunda a Sexta: 08:00 às 18:00 | Sábado: 08:00 às 12:30'}
-              </div>
-
-              <div className="pt-2 flex flex-col sm:flex-row gap-3">
+              <div className="pt-4 flex items-center gap-3">
                 <button
                   onClick={onConsultWhatsApp}
-                  className="flex-1 py-2.5 px-4 rounded-lg bg-estrela-red hover:bg-estrela-red-hover text-white text-xs font-bold transition flex items-center justify-center gap-2 shadow-md"
+                  className="py-3 px-5 rounded-xl bg-[#25D366] hover:bg-[#20ba59] text-white text-xs sm:text-sm font-bold transition flex items-center gap-2 shadow-md active:scale-95"
                 >
-                  <MessageCircle className="w-4 h-4 fill-white" />
-                  <span>Falar pelo WhatsApp</span>
+                  <WhatsAppIcon className="w-4 h-4 fill-white" />
+                  <span>Falar com Atendimento no WhatsApp</span>
                 </button>
-                <Link
-                  to="/contato"
-                  className="py-2.5 px-4 rounded-lg border border-white/20 text-white hover:bg-white/10 text-xs font-semibold transition text-center"
-                >
-                  Ver Mapa e Rota
-                </Link>
               </div>
             </div>
+
+            {/* Card Venha nos Visitar: MAPA DIRETO DO GOOGLE MAPS (Clicável) */}
+            <a
+              href={googleMapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group block bg-black/60 border border-white/10 hover:border-estrela-red rounded-xl p-6 transition shadow-xl"
+              title="Clique para abrir o perfil e traçar rota no Google Maps"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2 text-white font-bold text-base">
+                  <MapPin className="w-5 h-5 text-estrela-red" />
+                  <span>Venha nos Visitar na Loja Física</span>
+                </div>
+                <span className="text-[11px] text-estrela-red font-semibold group-hover:underline flex items-center gap-1">
+                  Abrir no Maps ➔
+                </span>
+              </div>
+
+              {/* Iframe Mapa do Google Maps Clicável */}
+              <div className="w-full h-48 rounded-lg overflow-hidden border border-white/10 relative mb-4 pointer-events-none">
+                <iframe
+                  title="Localização Baterias Estrela Mendes Arapongas"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0, filter: 'grayscale(30%) contrast(1.1)' }}
+                  loading="lazy"
+                  src="https://maps.google.com/maps?q=Rua+Tapera%C3%A7u+165+Vila+Sampaio+Arapongas+PR&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                />
+              </div>
+
+              <div className="space-y-2 text-xs text-estrela-gray-300">
+                <p className="font-semibold text-white">
+                  {settings.address || 'Rua Taperaçu 165, Vila Sampaio'} — {settings.city || 'Arapongas'} - {settings.state || 'PR'}
+                </p>
+                <div className="flex items-center gap-1.5 text-estrela-gray-400">
+                  <Clock className="w-3.5 h-3.5 text-estrela-red" />
+                  <span>Segunda a Sexta: 08h às 19h | Sábado: 08h às 13h</span>
+                </div>
+              </div>
+            </a>
           </div>
         </div>
       </section>

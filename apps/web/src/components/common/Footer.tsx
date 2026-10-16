@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Phone, MessageCircle, Clock, ShieldCheck, Zap } from 'lucide-react';
+import { MapPin, Phone, Clock, ShieldCheck, Zap } from 'lucide-react';
+import { WhatsAppIcon } from './WhatsAppIcon';
 import { useSite } from '../../contexts/SiteContext';
 import { formatPhoneNumber, buildTelLink, buildWhatsAppLink } from '@baterias-estrela/shared';
 import { handlePhoneClick, handleWhatsAppClick } from '../../lib/analytics';
@@ -22,36 +23,30 @@ export const Footer: React.FC = () => {
 
   return (
     <footer className="bg-estrela-black border-t border-estrela-dark text-estrela-gray-400">
-      {/* Faixa de Diferenciais de Arapongas */}
-      <div className="border-b border-estrela-dark/60 bg-estrela-dark/40 py-8 px-4 sm:px-6 lg:px-8">
+      {/* Faixa de Diferenciais de Arapongas - Sem fundos de IA artificiais */}
+      <div className="border-b border-white/10 bg-estrela-dark py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 text-center md:text-left">
-          <div className="flex items-center gap-4 justify-center md:justify-start">
-            <div className="w-12 h-12 rounded-full bg-estrela-red/10 border border-estrela-red/20 flex items-center justify-center text-estrela-red shrink-0">
-              <Zap className="w-6 h-6" />
-            </div>
+          <div className="flex items-center gap-3.5 justify-center md:justify-start">
+            <Zap className="w-6 h-6 text-estrela-red shrink-0" />
             <div>
-              <h4 className="text-white font-bold text-sm">Instalação Grátis em Arapongas</h4>
-              <p className="text-xs text-estrela-gray-400">Troca rápida no local com salvador de memória de bordo.</p>
+              <h4 className="text-white font-bold text-sm">Instalação com Proteção de Memória</h4>
+              <p className="text-xs text-estrela-gray-400">Usamos bateria auxiliar para não desconfigurar rádio e injeção.</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-4 justify-center md:justify-start">
-            <div className="w-12 h-12 rounded-full bg-estrela-red/10 border border-estrela-red/20 flex items-center justify-center text-estrela-red shrink-0">
-              <ShieldCheck className="w-6 h-6" />
-            </div>
+          <div className="flex items-center gap-3.5 justify-center md:justify-start">
+            <ShieldCheck className="w-6 h-6 text-emerald-400 shrink-0" />
             <div>
-              <h4 className="text-white font-bold text-sm">Garantia Nacional de Fábrica</h4>
-              <p className="text-xs text-estrela-gray-400">Produtos originais homologados pelas principais montadoras.</p>
+              <h4 className="text-white font-bold text-sm">Garantia Nacional das Fabricantes</h4>
+              <p className="text-xs text-estrela-gray-400">Baterias originais Moura, Heliar, Bralmax e Zetta com nota e garantia.</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-4 justify-center md:justify-start">
-            <div className="w-12 h-12 rounded-full bg-estrela-red/10 border border-estrela-red/20 flex items-center justify-center text-estrela-red shrink-0">
-              <Clock className="w-6 h-6" />
-            </div>
+          <div className="flex items-center gap-3.5 justify-center md:justify-start">
+            <Clock className="w-6 h-6 text-estrela-red shrink-0" />
             <div>
-              <h4 className="text-white font-bold text-sm">Plantão de Socorro Automotivo</h4>
-              <p className="text-xs text-estrela-gray-400">Atendimento ágil para panes de bateria na cidade e rodovias.</p>
+              <h4 className="text-white font-bold text-sm">Socorro de Bateria das 08h às 19h</h4>
+              <p className="text-xs text-estrela-gray-400">Atendimento móvel rápido para panes de bateria em Arapongas.</p>
             </div>
           </div>
         </div>
@@ -59,24 +54,21 @@ export const Footer: React.FC = () => {
 
       {/* Conteúdo Principal do Rodapé */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        {/* Coluna 1: Loja e Apresentação */}
+        {/* Coluna 1: Loja e Apresentação com Logo Oficial */}
         <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded bg-estrela-dark border border-white/10 flex items-center justify-center">
-              <Zap className="w-5 h-5 text-estrela-red fill-estrela-red" />
-            </div>
-            <span className="text-lg font-bold text-white uppercase tracking-tight">
-              Baterias <span className="text-estrela-red">Estrela</span>
-            </span>
-          </div>
-          <p className="text-sm text-estrela-gray-400 leading-relaxed">
-            {settings.tagline || 'Especialistas em baterias automotivas, diagnóstico de carga e socorro emergencial em Arapongas - PR.'}
+          <Link to="/" className="inline-block">
+            <img
+              src="/logo.png"
+              alt="Baterias Estrela Mendes"
+              className="h-12 w-auto object-contain"
+            />
+          </Link>
+          <p className="text-xs text-estrela-gray-400 leading-relaxed">
+            Loja especializada em baterias automotivas, diagnóstico de alternador e socorro móvel em Arapongas - PR.
           </p>
-          <div className="pt-2">
-            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-400 bg-emerald-950/40 border border-emerald-800/40 px-2.5 py-1 rounded-md">
-              <ShieldCheck className="w-3.5 h-3.5" />
-              Ponto Certificado de Descarte Ecológico
-            </span>
+          <div className="text-xs text-estrela-gray-400 space-y-1">
+            <p><strong>CNPJ:</strong> 84.987.379/0001-65</p>
+            <p>Baterias Estrela Mendes Ltda</p>
           </div>
         </div>
 
@@ -93,10 +85,10 @@ export const Footer: React.FC = () => {
               <Link to="/encontrar-bateria" className="hover:text-white transition">Buscar por Veículo</Link>
             </li>
             <li>
-              <Link to="/servicos" className="hover:text-white transition">Nossos Serviços</Link>
+              <Link to="/servicos" className="hover:text-white transition">Serviços da Loja</Link>
             </li>
             <li>
-              <Link to="/socorro" className="hover:text-estrela-red transition font-medium">Socorro Rápido Emergencial</Link>
+              <Link to="/socorro" className="hover:text-estrela-red transition font-medium">Socorro Rápido (8h às 19h)</Link>
             </li>
             <li>
               <Link to="/contato" className="hover:text-white transition">Fale Conosco</Link>
@@ -107,23 +99,34 @@ export const Footer: React.FC = () => {
           </ul>
         </div>
 
-        {/* Coluna 3: Localização e Horários */}
+        {/* Coluna 3: Localização e Horários Reais */}
         <div>
           <h4 className="text-white font-bold text-sm uppercase tracking-wider mb-4 border-l-2 border-estrela-red pl-2.5">
             Onde Estamos
           </h4>
           <div className="space-y-3 text-sm">
-            <div className="flex items-start gap-2.5">
-              <MapPin className="w-4 h-4 text-estrela-red shrink-0 mt-0.5" />
+            <a
+              href="https://www.google.com/maps/search/?api=1&query=Rua+Tapera%C3%A7u+165+Vila+Sampaio+Arapongas+PR"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-start gap-2.5 hover:text-white transition group"
+              title="Abrir no Google Maps"
+            >
+              <MapPin className="w-4 h-4 text-estrela-red shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
               <span>
                 {settings.address || 'Rua Taperaçu 165, Vila Sampaio'}<br />
                 {settings.city || 'Arapongas'} - {settings.state || 'PR'}<br />
                 CEP: {settings.postalCode || '86700-000'}
               </span>
-            </div>
+            </a>
+
             <div className="flex items-start gap-2.5 pt-1">
               <Clock className="w-4 h-4 text-estrela-red shrink-0 mt-0.5" />
-              <span>{settings.workingHours || 'Seg a Sex: 08h às 18h | Sáb: 08h às 12h30'}</span>
+              <div>
+                <span className="text-white font-medium block">Horário da Loja:</span>
+                <span>Seg a Sex: 08h às 19h</span><br />
+                <span>Sábado: 08h às 13h</span>
+              </div>
             </div>
           </div>
         </div>
@@ -136,24 +139,20 @@ export const Footer: React.FC = () => {
           <div className="space-y-3 text-sm">
             <button
               onClick={onWhatsApp}
-              className="w-full py-2.5 px-3 rounded-lg bg-estrela-dark hover:bg-white/10 border border-white/10 hover:border-estrela-red/50 transition flex items-center gap-3 text-left group"
+              className="w-full py-2.5 px-3 rounded-lg bg-[#25D366] hover:bg-[#20ba59] text-white font-bold transition flex items-center gap-3 text-left shadow-md"
             >
-              <div className="w-8 h-8 rounded-full bg-estrela-red/20 flex items-center justify-center text-estrela-red group-hover:bg-estrela-red group-hover:text-white transition">
-                <MessageCircle className="w-4 h-4 fill-current" />
-              </div>
+              <WhatsAppIcon className="w-5 h-5 fill-white shrink-0" />
               <div>
-                <span className="block text-xs text-estrela-gray-400">WhatsApp Oficial</span>
-                <span className="text-white font-semibold">{formatPhoneNumber(footerWhatsApp)}</span>
+                <span className="block text-[11px] text-white/90">WhatsApp Oficial</span>
+                <span className="text-sm">{formatPhoneNumber(footerWhatsApp)}</span>
               </div>
             </button>
 
             <button
               onClick={onCall}
-              className="w-full py-2.5 px-3 rounded-lg bg-estrela-dark hover:bg-white/10 border border-white/10 hover:border-white/30 transition flex items-center gap-3 text-left"
+              className="w-full py-2.5 px-3 rounded-lg bg-estrela-dark hover:bg-white/10 border border-white/15 transition flex items-center gap-3 text-left"
             >
-              <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white">
-                <Phone className="w-4 h-4" />
-              </div>
+              <Phone className="w-4 h-4 text-white shrink-0" />
               <div>
                 <span className="block text-xs text-estrela-gray-400">Plantão Telefônico</span>
                 <span className="text-white font-semibold">{formatPhoneNumber(footerPhone)}</span>
@@ -163,14 +162,12 @@ export const Footer: React.FC = () => {
         </div>
       </div>
 
-      {/* Copyright e Acesso Administrativo */}
+      {/* Copyright e CNPJ - Sem link público para Admin */}
       <div className="border-t border-estrela-dark py-6 px-4 sm:px-6 lg:px-8 text-xs text-estrela-gray-500">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3">
-          <p>© {new Date().getFullYear()} Baterias Estrela - Arapongas, PR. Todos os direitos reservados. Sem preços públicos divulgados online.</p>
+          <p>© {new Date().getFullYear()} Baterias Estrela Mendes — CNPJ: 84.987.379/0001-65. Arapongas - PR. Todos os direitos reservados.</p>
           <div className="flex items-center gap-4">
             <Link to="/privacidade" className="hover:text-estrela-gray-300 transition">Privacidade e Cookies</Link>
-            <span className="text-estrela-gray-700">|</span>
-            <Link to="/admin/login" className="hover:text-estrela-red transition font-medium">Área Restrita (Admin)</Link>
           </div>
         </div>
       </div>

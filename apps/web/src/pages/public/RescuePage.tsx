@@ -2,15 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useSite } from '../../contexts/SiteContext';
 import { buildWhatsAppRescueMessage, buildWhatsAppLink, buildTelLink, formatPhoneNumber } from '@baterias-estrela/shared';
 import { trackEvent, handleWhatsAppClick, handlePhoneClick } from '../../lib/analytics';
+import { WhatsAppIcon } from '../../components/common/WhatsAppIcon';
 import {
   ShieldAlert,
   Phone,
-  MessageCircle,
   MapPin,
   Compass,
   AlertTriangle,
   CheckCircle2,
   Clock,
+  Info,
 } from 'lucide-react';
 
 export const RescuePage: React.FC = () => {
@@ -18,11 +19,14 @@ export const RescuePage: React.FC = () => {
 
   const [problemType, setProblemType] = useState('Bateria arriada / sem partida');
   const [vehicle, setVehicle] = useState('');
-  const [description, setDescription] = useState('');
+  const [streetAddress, setStreetAddress] = useState('');
+  const [neighborhood, setNeighborhood] = useState('');
   const [addressReference, setAddressReference] = useState('');
+  const [description, setDescription] = useState('');
   const [gpsLocation, setGpsLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [gettingLocation, setGettingLocation] = useState(false);
   const [locationError, setLocationError] = useState('');
+  const [formError, setFormError] = useState('');
 
   useEffect(() => {
     trackEvent('page_view', { path: '/socorro' });
@@ -30,7 +34,7 @@ export const RescuePage: React.FC = () => {
 
   const handleShareGps = () => {
     if (!navigator.geolocation) {
-      setLocationError('Seu navegador não suporta compartilhamento de geolocalização.');
+      setLocationError('Seu navegador não suporta geolocalização.');
       return;
     }
 
@@ -48,9 +52,9 @@ export const RescuePage: React.FC = () => {
       (err) => {
         setGettingLocation(false);
         if (err.code === err.PERMISSION_DENIED) {
-          setLocationError('Permissão de localização negada pelo usuário.');
+          setLocationError('Permissão de GPS negada. Preencha seu endereço nos campos abaixo.');
         } else {
-          setLocationError('Não foi possível obter sua localização exata. Preencha o ponto de referência.');
+          setLocationError('Não foi possível obter o GPS com precisão. Preencha seu endereço abaixo.');
         }
       },
       { timeout: 10000, enableHighAccuracy: true }
@@ -58,19 +62,29 @@ export const RescuePage: React.FC = () => {
   };
 
   const handleTriggerRescue = () => {
+    if (!streetAddress.trim() || !neighborhood.trim()) {
+      setFormError('Por favor, informe a Rua/Número e o Bairro para envio da equipe.');
+      return;
+    }
+    setFormError('');
+
+    const fullAddress = `${streetAddress.trim()}, Bairro ${neighborhood.trim()}${
+      addressReference.trim() ? ` (Ponto de ref: ${addressReference.trim()})` : ''
+    }`;
+
     const msg = buildWhatsAppRescueMessage({
       problemType,
       vehicle: vehicle || undefined,
       description: description || undefined,
       latitude: gpsLocation?.lat,
       longitude: gpsLocation?.lng,
-      addressReference: addressReference || undefined,
+      addressReference: fullAddress,
     });
 
     const url = buildWhatsAppLink(footerWhatsApp, msg);
     handleWhatsAppClick(url, {
       path: '/socorro',
-      metadata: { action: 'rescue_whatsapp_trigger', problemType, vehicle },
+      metadata: { action: 'rescue_whatsapp_trigger', problemType, vehicle, fullAddress },
     });
   };
 
@@ -80,28 +94,31 @@ export const RescuePage: React.FC = () => {
 
   const problemOptions = [
     'Bateria arriada / sem partida',
-    'Carro apagou no trânsito / parado na rua',
-    'Luz da bateria acesa no painel (possível alternador)',
+    'Carro não liga e painel fraco/apagado',
+    'Bateria descarregou (farol ou rádio ligado)',
     'Estalo ao dar a partida sem girar o motor',
-    'Outro problema elétrico emergencial',
   ];
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
       {/* Top Banner Emergencial */}
-      <div className="p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-red-950 via-estrela-dark to-estrela-dark border border-estrela-red/50 relative overflow-hidden shadow-2xl">
+      <div className="p-6 sm:p-8 rounded-2xl bg-estrela-dark border border-estrela-red/40 relative overflow-hidden shadow-2xl">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 relative z-10">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-estrela-red text-white text-xs font-bold uppercase tracking-wider animate-pulse">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-estrela-red text-white text-xs font-bold uppercase tracking-wider">
               <ShieldAlert className="w-4 h-4" />
-              <span>Plantão de Socorro Automotivo</span>
+              <span>Socorro de Bateria Automotiva</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black text-white">
-              O Carro Parou? Nós Levamos a Bateria até Você
+              O Carro Não Pega? Levamos a Bateria até Você
             </h1>
             <p className="text-xs sm:text-sm text-estrela-gray-300">
-              Atendimento em domicílio, garagem, estacionamentos e vias públicas em Arapongas.
+              Atendimento ágil em residências, empresas, garagens e vias de Arapongas.
             </p>
+            <div className="flex items-center gap-2 text-xs font-medium text-estrela-gray-400 pt-1">
+              <Clock className="w-4 h-4 text-estrela-red" />
+              <span>Horário do Socorro: <strong>Segunda a Sábado, das 08:00 às 19:00</strong></span>
+            </div>
           </div>
 
           <button
@@ -109,24 +126,35 @@ export const RescuePage: React.FC = () => {
             className="px-5 py-3 rounded-xl bg-white hover:bg-estrela-gray-100 text-estrela-black font-extrabold text-sm transition flex items-center gap-2 shrink-0 shadow-lg active:scale-95"
           >
             <Phone className="w-4 h-4 text-estrela-red" />
-            <span>Ligar Agora ({formatPhoneNumber(headerPhone)})</span>
+            <span>Ligar ({formatPhoneNumber(headerPhone)})</span>
           </button>
         </div>
       </div>
 
-      {/* Formulário Interativo de Socorro */}
-      <div className="bg-estrela-dark border border-estrela-card rounded-2xl p-6 sm:p-8 space-y-6 shadow-xl">
+      {/* Alerta de Escopo de Atendimento Exclusivo */}
+      <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-xs sm:text-sm flex items-start gap-3">
+        <Info className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
         <div>
-          <h2 className="text-lg font-bold text-white mb-1">Dados para Envio do Socorro</h2>
+          <strong className="text-white block font-bold">Importante sobre nosso atendimento móvel:</strong>
+          <span>
+            Nosso socorro é <strong>exclusivo para problemas de bateria</strong> (teste, carga auxiliar e substituição com bateria nova). Não realizamos reparos de mecânica pesada, motor de partida, ignição ou outros defeitos elétricos gerais.
+          </span>
+        </div>
+      </div>
+
+      {/* Formulário de Socorro */}
+      <div className="bg-estrela-dark border border-white/10 rounded-2xl p-6 sm:p-8 space-y-6 shadow-xl">
+        <div>
+          <h2 className="text-lg font-bold text-white mb-1">Preencha os Dados para Deslocamento</h2>
           <p className="text-xs text-estrela-gray-400">
-            Preencha os campos abaixo para que nossa equipe saia com o modelo correto e as ferramentas necessárias.
+            Informe o problema e o local exato onde o carro está para enviarmos o técnico com o modelo de bateria correto.
           </p>
         </div>
 
         {/* 1. Tipo de Problema */}
         <div>
           <label className="block text-xs font-semibold text-estrela-gray-300 uppercase tracking-wider mb-2">
-            1. Qual o problema que está acontecendo? *
+            1. O que está acontecendo com a bateria? *
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             {problemOptions.map((opt) => (
@@ -134,9 +162,9 @@ export const RescuePage: React.FC = () => {
                 key={opt}
                 type="button"
                 onClick={() => setProblemType(opt)}
-                className={`text-left text-xs p-3 rounded-lg border transition ${
+                className={`text-left text-xs p-3.5 rounded-lg border transition ${
                   problemType === opt
-                    ? 'border-estrela-red bg-estrela-red/15 text-white font-bold'
+                    ? 'border-estrela-red bg-estrela-red/20 text-white font-bold'
                     : 'border-white/10 bg-estrela-card text-estrela-gray-300 hover:border-white/30'
                 }`}
               >
@@ -147,51 +175,79 @@ export const RescuePage: React.FC = () => {
         </div>
 
         {/* 2. Veículo */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs font-semibold text-estrela-gray-300 uppercase tracking-wider mb-1.5">
-              2. Modelo e Ano do Veículo
-            </label>
-            <input
-              type="text"
-              value={vehicle}
-              onChange={(e) => setVehicle(e.target.value)}
-              placeholder="Ex: Fiat Strada 1.4 2019"
-              className="w-full bg-estrela-card border border-white/10 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-estrela-gray-500 focus:outline-none focus:border-estrela-red"
-            />
+        <div>
+          <label className="block text-xs font-semibold text-estrela-gray-300 uppercase tracking-wider mb-1.5">
+            2. Modelo e Ano do Veículo
+          </label>
+          <input
+            type="text"
+            value={vehicle}
+            onChange={(e) => setVehicle(e.target.value)}
+            placeholder="Ex: Fiat Strada 1.4 2019 / Corolla 2.0 2021"
+            className="w-full bg-estrela-card border border-white/10 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-estrela-gray-500 focus:outline-none focus:border-estrela-red"
+          />
+        </div>
+
+        {/* 3. Endereço Obrigatório */}
+        <div className="space-y-3 pt-2 border-t border-white/5">
+          <label className="block text-xs font-semibold text-estrela-gray-300 uppercase tracking-wider">
+            3. Endereço Onde o Carro Está Parado *
+          </label>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <span className="block text-[11px] text-estrela-gray-400 mb-1">Rua / Avenida e Número *</span>
+              <input
+                type="text"
+                required
+                value={streetAddress}
+                onChange={(e) => setStreetAddress(e.target.value)}
+                placeholder="Ex: Rua Taperaçu, 165"
+                className="w-full bg-estrela-card border border-white/10 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-estrela-gray-500 focus:outline-none focus:border-estrela-red"
+              />
+            </div>
+            <div>
+              <span className="block text-[11px] text-estrela-gray-400 mb-1">Bairro *</span>
+              <input
+                type="text"
+                required
+                value={neighborhood}
+                onChange={(e) => setNeighborhood(e.target.value)}
+                placeholder="Ex: Centro / Vila Sampaio / Jd. Primavera"
+                className="w-full bg-estrela-card border border-white/10 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-estrela-gray-500 focus:outline-none focus:border-estrela-red"
+              />
+            </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-estrela-gray-300 uppercase tracking-wider mb-1.5">
-              3. Ponto de Referência em Arapongas
-            </label>
+            <span className="block text-[11px] text-estrela-gray-400 mb-1">Ponto de Referência (Opcional)</span>
             <input
               type="text"
               value={addressReference}
               onChange={(e) => setAddressReference(e.target.value)}
-              placeholder="Ex: Av. Arapongas em frente ao banco / Bairro Industrial"
+              placeholder="Ex: Em frente ao posto de combustível / Próximo ao supermercado"
               className="w-full bg-estrela-card border border-white/10 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-estrela-gray-500 focus:outline-none focus:border-estrela-red"
             />
           </div>
         </div>
 
-        {/* 3. Compartilhamento opcional de GPS */}
-        <div className="bg-estrela-card/60 border border-white/10 rounded-xl p-4 space-y-3">
+        {/* 4. Compartilhamento de GPS (Opcional de apoio) */}
+        <div className="bg-estrela-card/40 border border-white/10 rounded-xl p-4 space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-white flex items-center gap-2">
               <Compass className="w-4 h-4 text-estrela-red" />
-              Compartilhar Localização GPS Exata (Opcional)
+              Localização GPS do Navegador (Opcional)
             </span>
             {gpsLocation && (
               <span className="text-xs font-bold text-emerald-400 flex items-center gap-1">
                 <CheckCircle2 className="w-3.5 h-3.5" />
-                Localização Capturada!
+                GPS Capturado!
               </span>
             )}
           </div>
 
           <p className="text-xs text-estrela-gray-400">
-            Facilita a rota do socorrista até o local exato onde seu carro está parado. O navegador solicitará sua autorização.
+            Você pode enviar o link do GPS junto ao endereço para agilizar a localização da nossa equipe.
           </p>
 
           <button
@@ -201,7 +257,7 @@ export const RescuePage: React.FC = () => {
             className="px-4 py-2 rounded-lg bg-estrela-dark hover:bg-white/10 border border-white/20 text-xs text-white font-semibold flex items-center gap-2 transition"
           >
             <MapPin className="w-3.5 h-3.5 text-estrela-red" />
-            <span>{gettingLocation ? 'Obtendo GPS...' : gpsLocation ? 'Atualizar Minha Posição' : 'Autorizar e Compartilhar Localização'}</span>
+            <span>{gettingLocation ? 'Obtendo GPS...' : gpsLocation ? 'Atualizar Minha Posição' : 'Adicionar Minha Localização GPS'}</span>
           </button>
 
           {locationError && (
@@ -209,36 +265,42 @@ export const RescuePage: React.FC = () => {
           )}
         </div>
 
-        {/* Detalhes opcionais */}
+        {/* 5. Observação Adicional */}
         <div>
           <label className="block text-xs font-semibold text-estrela-gray-300 uppercase tracking-wider mb-1.5">
-            4. Detalhes Adicionais (Opcional)
+            5. Detalhes Adicionais (Opcional)
           </label>
           <textarea
             rows={2}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Ex: Luz do painel enfraqueceu e fez barulho de tec-tec."
+            placeholder="Ex: O carro é automático / A bateria fica embaixo do banco ou no porta-malas."
             className="w-full bg-estrela-card border border-white/10 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-estrela-gray-500 focus:outline-none focus:border-estrela-red"
           />
         </div>
 
-        {/* Botão de Envio WhatsApp com mensagem pronta */}
+        {formError && (
+          <p className="text-xs font-bold text-estrela-red bg-estrela-red/10 p-3 rounded-lg border border-estrela-red/20">
+            {formError}
+          </p>
+        )}
+
+        {/* Botão de Envio WhatsApp com Cor Oficial #25D366 */}
         <div className="pt-2">
           <button
             onClick={handleTriggerRescue}
-            className="w-full py-4 px-6 rounded-xl bg-estrela-red hover:bg-estrela-red-hover text-white text-base font-extrabold transition flex items-center justify-center gap-3 shadow-xl shadow-estrela-red/30 active:scale-95"
+            className="w-full py-4 px-6 rounded-xl bg-[#25D366] hover:bg-[#20ba59] text-white text-base font-extrabold transition flex items-center justify-center gap-3 shadow-xl shadow-[#25D366]/20 active:scale-95"
           >
-            <MessageCircle className="w-5 h-5 fill-white" />
+            <WhatsAppIcon className="w-5 h-5 fill-white" />
             <span>Enviar Pedido de Socorro pelo WhatsApp</span>
           </button>
         </div>
 
-        {/* Nota de transparência técnica */}
-        <div className="p-4 rounded-xl bg-estrela-card/40 border border-white/5 flex items-start gap-3 text-xs text-estrela-gray-400">
+        {/* Nota técnica */}
+        <div className="p-4 rounded-xl bg-estrela-card/30 border border-white/5 flex items-start gap-3 text-xs text-estrela-gray-400">
           <Clock className="w-4 h-4 text-estrela-gray-400 shrink-0 mt-0.5" />
           <span>
-            <strong>Informação importante:</strong> O tempo exato de deslocamento dependerá do trânsito e da disponibilidade no momento do acionamento. Nossa equipe informará a previsão realista assim que responder sua mensagem no WhatsApp.
+            <strong>Atendimento imediato:</strong> Ao clicar no botão, uma mensagem pré-formatada com o endereço e os dados do veículo será enviada ao nosso WhatsApp de plantão para resposta rápida e confirmação do tempo de deslocamento.
           </span>
         </div>
       </div>
@@ -253,7 +315,7 @@ export const RescuePage: React.FC = () => {
           <li>Ligue o pisca-alerta imediatamente.</li>
           <li>Posicione o triângulo de sinalização a uma distância segura do veículo.</li>
           <li>Permaneça em local seguro, preferencialmente fora da pista ou na calçada.</li>
-          <li>Não tente dar "tranco" em veículos modernos com injeção eletrônica ou câmbio automático para não danificar o catalisador.</li>
+          <li>Em veículos modernos com injeção eletrônica ou câmbio automático, <strong>não dê tranco</strong> para evitar danos ao catalisador e à correia.</li>
         </ul>
       </div>
     </div>

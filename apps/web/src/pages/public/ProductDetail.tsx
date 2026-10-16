@@ -89,10 +89,8 @@ export const ProductDetail: React.FC = () => {
     );
   }
 
-  const activeImage =
-    product.images[activeImageIndex]?.url ||
-    product.images[0]?.url ||
-    'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=800&q=80';
+  const activeImage = product.images[activeImageIndex]?.url || product.images[0]?.url;
+  const hasValidImage = activeImage && !activeImage.includes('unsplash');
 
   const onConsultWhatsApp = () => {
     const msg = buildWhatsAppProductMessage({
@@ -126,11 +124,31 @@ export const ProductDetail: React.FC = () => {
         {/* Galeria de Fotos */}
         <div className="space-y-4">
           <div className="relative aspect-[4/3] bg-estrela-dark border border-white/10 rounded-2xl overflow-hidden shadow-2xl flex items-center justify-center">
-            <img
-              src={activeImage}
-              alt={product.name}
-              className="w-full h-full object-cover object-center"
-            />
+            {hasValidImage ? (
+              <img
+                src={activeImage}
+                alt={product.name}
+                className="w-full h-full object-cover object-center"
+              />
+            ) : (
+              <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-neutral-900 via-estrela-card to-neutral-950 p-8 text-center select-none">
+                <div className="w-24 h-16 border-2 border-dashed border-white/20 rounded-lg flex flex-col items-center justify-center relative mb-3">
+                  <div className="absolute -top-2 flex gap-6">
+                    <span className="w-3.5 h-2 bg-white/40 rounded-t-sm" />
+                    <span className="w-3.5 h-2 bg-white/40 rounded-t-sm" />
+                  </div>
+                  <span className="text-xs font-black text-estrela-red tracking-wider uppercase">
+                    {product.brand}
+                  </span>
+                </div>
+                <span className="text-sm font-bold text-estrela-gray-300 tracking-wider uppercase">
+                  Imagem produto
+                </span>
+                <span className="text-xs text-estrela-gray-500 mt-1">
+                  {product.name}
+                </span>
+              </div>
+            )}
             {product.isFeatured && (
               <span className="absolute top-4 left-4 bg-estrela-red text-white text-xs font-bold uppercase tracking-wider px-3 py-1 rounded shadow-lg">
                 Destaque
@@ -143,7 +161,7 @@ export const ProductDetail: React.FC = () => {
           </div>
 
           {/* Miniaturas de Fotos */}
-          {product.images.length > 1 && (
+          {hasValidImage && product.images.length > 1 && (
             <div className="flex items-center gap-3 overflow-x-auto pb-2">
               {product.images.map((img, idx) => (
                 <button

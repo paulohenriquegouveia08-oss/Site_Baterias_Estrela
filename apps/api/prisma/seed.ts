@@ -445,18 +445,10 @@ async function main() {
       isFeatured: true,
       stockStatus: 'in_stock',
       status: 'active',
-      internalCostNotes: 'Preço de custo distribuidor R$ 390. Margem sugerida R$ 510 com sucata.',
+      internalCostNotes: 'Preço de custo distribuidor R$ 390. Margem sugerida R$ 510.',
       categories: {
         create: [{ categoryId: catLeves.id }],
       },
-      images: {
-        create: [
-          {
-            url: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=800&q=80',
-            altText: 'Bateria Moura 60Ah M60GD Frontal',
-            displayOrder: 1,
-            isCover: true,
-          },
         ],
       },
     },
@@ -484,14 +476,6 @@ async function main() {
       categories: {
         create: [{ categoryId: catLeves.id }],
       },
-      images: {
-        create: [
-          {
-            url: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=800&q=80',
-            altText: 'Bateria Heliar 60Ah Original Frontal',
-            displayOrder: 1,
-            isCover: true,
-          },
         ],
       },
     },
@@ -518,14 +502,6 @@ async function main() {
       categories: {
         create: [{ categoryId: catStartStop.id }, { categoryId: catLeves.id }],
       },
-      images: {
-        create: [
-          {
-            url: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=800&q=80',
-            altText: 'Bateria Moura EFB Start-Stop 60Ah',
-            displayOrder: 1,
-            isCover: true,
-          },
         ],
       },
     },
@@ -552,14 +528,6 @@ async function main() {
       categories: {
         create: [{ categoryId: catLeves.id }],
       },
-      images: {
-        create: [
-          {
-            url: 'https://images.unsplash.com/photo-1558441719-8b449c6ff673?auto=format&fit=crop&w=800&q=80',
-            altText: 'Bateria Bralmax 60Ah',
-            displayOrder: 1,
-            isCover: true,
-          },
         ],
       },
     },
@@ -586,14 +554,6 @@ async function main() {
       categories: {
         create: [{ categoryId: catLeves.id }],
       },
-      images: {
-        create: [
-          {
-            url: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=800&q=80',
-            altText: 'Bateria Zetta 60Ah',
-            displayOrder: 1,
-            isCover: true,
-          },
         ],
       },
     },
@@ -620,14 +580,6 @@ async function main() {
       categories: {
         create: [{ categoryId: catLeves.id }],
       },
-      images: {
-        create: [
-          {
-            url: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=800&q=80',
-            altText: 'Bateria Moura 48Ah M48FD',
-            displayOrder: 1,
-            isCover: true,
-          },
         ],
       },
     },
@@ -654,14 +606,6 @@ async function main() {
       categories: {
         create: [{ categoryId: catSuv.id }],
       },
-      images: {
-        create: [
-          {
-            url: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=800&q=80',
-            altText: 'Bateria Moura 70Ah M70RD',
-            displayOrder: 1,
-            isCover: true,
-          },
         ],
       },
     },
@@ -688,14 +632,6 @@ async function main() {
       categories: {
         create: [{ categoryId: catSuv.id }],
       },
-      images: {
-        create: [
-          {
-            url: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=800&q=80',
-            altText: 'Bateria Moura 90Ah M90TD',
-            displayOrder: 1,
-            isCover: true,
-          },
         ],
       },
     },

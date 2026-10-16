@@ -14,9 +14,8 @@ interface ProductCardProps {
 export const ProductCard: React.FC<ProductCardProps> = ({ product, vehicleName }) => {
   const { defaultWhatsApp } = useSite();
 
-  const coverImage = product.images?.find((img) => img.isCover)?.url ||
-    product.images?.[0]?.url ||
-    'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=600&q=80';
+  const coverImage = product.images?.find((img) => img.isCover)?.url || product.images?.[0]?.url;
+  const hasValidImage = coverImage && !coverImage.includes('unsplash');
 
   const onConsultWhatsApp = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -42,12 +41,32 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, vehicleName }
     <div className="group bg-estrela-dark border border-white/10 hover:border-estrela-red/60 rounded-xl overflow-hidden flex flex-col transition-all duration-200 hover:shadow-xl">
       {/* Imagem do Produto */}
       <Link to={`/baterias/${product.slug}`} className="relative block aspect-[4/3] bg-estrela-card overflow-hidden">
-        <img
-          src={coverImage}
-          alt={product.name}
-          className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
-          loading="lazy"
-        />
+        {hasValidImage ? (
+          <img
+            src={coverImage}
+            alt={product.name}
+            className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
+            loading="lazy"
+          />
+        ) : (
+          <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-neutral-900 via-estrela-card to-neutral-950 p-6 text-center select-none group-hover:border-estrela-red/30 transition">
+            <div className="w-16 h-11 border-2 border-dashed border-white/20 rounded-md flex flex-col items-center justify-center relative mb-2.5">
+              <div className="absolute -top-1.5 flex gap-4">
+                <span className="w-2.5 h-1.5 bg-white/30 rounded-t-sm" />
+                <span className="w-2.5 h-1.5 bg-white/30 rounded-t-sm" />
+              </div>
+              <span className="text-[10px] font-black text-estrela-red tracking-wider uppercase">
+                {product.brand}
+              </span>
+            </div>
+            <span className="text-xs font-bold text-estrela-gray-300 tracking-wider uppercase">
+              Imagem produto
+            </span>
+            <span className="text-[11px] text-estrela-gray-500 mt-0.5 line-clamp-1">
+              {product.name}
+            </span>
+          </div>
+        )}
 
         {/* Badges superiores funcionais */}
         <div className="absolute top-3 left-3 flex flex-col gap-1.5 items-start">

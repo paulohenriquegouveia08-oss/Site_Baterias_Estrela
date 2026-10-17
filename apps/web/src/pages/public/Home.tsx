@@ -69,9 +69,23 @@ export const Home: React.FC = () => {
             </h1>
 
             <p className="text-base sm:text-lg text-estrela-gray-300 leading-relaxed font-normal">
-              Trabalhamos com as marcas mais conhecidas e confiáveis da região como <strong>Moura</strong>, <strong>Zetta</strong>, <strong>Heliar</strong>, <strong>Pioneiro</strong>, <strong>Eletran</strong>, entre muitas outras. 
+              Trabalhamos com as marcas mais conhecidas e confiáveis da região como <strong className="text-estrela-red font-black">Moura</strong>, <strong className="text-estrela-red font-black">Zetta</strong>, <strong className="text-estrela-red font-black">Heliar</strong>, <strong className="text-estrela-red font-black">Pioneiro</strong>, <strong className="text-estrela-red font-black">Eletran</strong>, entre muitas outras. 
               Entrega e instalação gratuita em Arapongas com teste de carga e preservação da memória de bordo.
             </p>
+
+            {/* Destaque das Marcas Principais em Vermelho */}
+            <div className="flex flex-wrap items-center gap-2 pt-1">
+              <span className="text-xs text-estrela-gray-400 font-semibold uppercase tracking-wider mr-1">Marcas:</span>
+              {['Moura', 'Zetta', 'Heliar', 'Pioneiro', 'Eletran'].map((brand) => (
+                <span
+                  key={brand}
+                  className="px-2.5 py-1 rounded-lg bg-estrela-red/10 border border-estrela-red/30 text-estrela-red font-black text-xs tracking-wide"
+                >
+                  {brand}
+                </span>
+              ))}
+              <span className="text-xs text-estrela-gray-400 font-medium">entre muitas outras</span>
+            </div>
 
             <div className="flex flex-wrap items-center gap-4 pt-2">
               <button

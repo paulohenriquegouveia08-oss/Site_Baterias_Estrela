@@ -136,11 +136,18 @@ export const AdminDashboard: React.FC = () => {
     <div className="space-y-8">
       {/* Top Header do Dashboard */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-estrela-card">
-        <div>
-          <h1 className="text-2xl font-black text-white">Dashboard de Desempenho</h1>
-          <p className="text-xs text-estrela-gray-400 mt-1">
-            Métricas em tempo real geradas a partir de eventos analíticos pseudonimizados.
-          </p>
+        <div className="flex items-center gap-4">
+          <img
+            src="/logo.png"
+            alt="Baterias Estrela Mendes"
+            className="h-12 w-auto object-contain shrink-0"
+          />
+          <div>
+            <h1 className="text-xl sm:text-2xl font-black text-white">Painel Baterias Estrela Mendes</h1>
+            <p className="text-xs text-estrela-gray-400 mt-0.5">
+              Métricas e gestão operacional da loja e socorro de baterias em Arapongas - PR.
+            </p>
+          </div>
         </div>
 
         {/* Seletor de Período */}

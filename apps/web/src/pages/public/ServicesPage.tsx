@@ -6,6 +6,7 @@ import { BatteryLoader } from '../../components/common/BatteryLoader';
 import { useSite } from '../../contexts/SiteContext';
 import { trackEvent, handleWhatsAppClick } from '../../lib/analytics';
 import { WhatsAppIcon } from '../../components/common/WhatsAppIcon';
+import { useToast } from '../../contexts/ToastContext';
 import {
   Truck,
   Zap,
@@ -20,6 +21,7 @@ import {
 
 export const ServicesPage: React.FC = () => {
   const { defaultWhatsApp, settings } = useSite();
+  const toast = useToast();
   const [selectedService, setSelectedService] = useState<PublicService | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -96,8 +98,9 @@ export const ServicesPage: React.FC = () => {
       });
 
       setFormSubmitted(true);
+      toast.success('Solicitação registrada com sucesso!', 'Em instantes nossa equipe entrará em contato.');
     } catch {
-      alert('Falha ao registrar solicitação. Por favor entre em contato direto pelo WhatsApp.');
+      toast.error('Falha ao registrar solicitação', 'Por favor entre em contato direto pelo nosso WhatsApp.');
     } finally {
       setSubmitting(false);
     }

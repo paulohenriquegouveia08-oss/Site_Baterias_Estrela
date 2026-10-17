@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiFetch, API_BASE_URL } from '../../lib/api';
+import { resolveMediaUrl } from '../../lib/media';
+import { useToast } from '../../contexts/ToastContext';
 import {
   AdminProduct,
   PublicCategory,
@@ -22,10 +24,13 @@ import {
   Star,
   CheckCircle2,
   AlertTriangle,
+  Archive,
+  RotateCcw,
 } from 'lucide-react';
 
 export const AdminProducts: React.FC = () => {
   const queryClient = useQueryClient();
+  const toast = useToast();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('active');
@@ -61,11 +66,39 @@ export const AdminProducts: React.FC = () => {
     queryFn: () => apiFetch<{ data: PublicCategory[] }>('/admin/categories'),
   });
 
-  // MUTAÇÃO: Arquivar Produto
+  // MUTAÇÃO: Excluir Definitivamente
+  const deletePermanentMutation = useMutation({
+    mutationFn: (id: string) => apiFetch(`/admin/products/${id}?permanent=true`, { method: 'DELETE' }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-products'] });
+      toast.success('Bateria excluída!', 'O produto e suas fotos foram removidos permanentemente.');
+    },
+    onError: (err: any) => {
+      toast.error('Erro ao excluir', err.message || 'Não foi possível excluir a bateria.');
+    },
+  });
+
+  // MUTAÇÃO: Reativar Produto
+  const restoreMutation = useMutation({
+    mutationFn: (id: string) => apiFetch(`/admin/products/${id}/restore`, { method: 'POST' }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-products'] });
+      toast.success('Bateria reativada!', 'O produto voltou a ficar ativo no catálogo.');
+    },
+    onError: (err: any) => {
+      toast.error('Erro ao reativar', err.message || 'Falha ao reativar bateria.');
+    },
+  });
+
+  // MUTAÇÃO: Arquivar / Desativar Produto
   const archiveMutation = useMutation({
     mutationFn: (id: string) => apiFetch(`/admin/products/${id}`, { method: 'DELETE' }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-products'] });
+      toast.info('Bateria arquivada', 'O produto foi desativado do catálogo público.');
+    },
+    onError: (err: any) => {
+      toast.error('Erro ao arquivar', err.message || 'Falha ao arquivar bateria.');
     },
   });
 
@@ -79,9 +112,9 @@ export const AdminProducts: React.FC = () => {
       a.download = `produtos-baterias-estrela-${new Date().toISOString().split('T')[0]}.csv`;
       document.body.appendChild(a);
       a.click();
-      a.remove();
+      toast.success('Download iniciado', 'O arquivo CSV foi gerado com sucesso.');
     } catch {
-      alert('Falha ao exportar CSV.');
+      toast.error('Erro na exportação', 'Falha ao gerar o arquivo CSV de produtos.');
     }
   };
 
@@ -108,8 +141,9 @@ export const AdminProducts: React.FC = () => {
       const data = await res.json();
       setImportReport(data.report);
       queryClient.invalidateQueries({ queryKey: ['admin-products'] });
+      toast.success('CSV importado!', 'O processamento do lote de produtos foi concluído.');
     } catch {
-      alert('Erro ao enviar arquivo CSV.');
+      toast.error('Erro na importação', 'Falha ao processar o arquivo CSV. Verifique a formatação das colunas.');
     } finally {
       setImporting(false);
     }
@@ -228,7 +262,7 @@ export const AdminProducts: React.FC = () => {
               </thead>
               <tbody className="divide-y divide-white/5">
                 {productsData.data.map((p) => {
-                  const cover = p.images.find((img) => img.isCover)?.url || p.images[0]?.url;
+                  const cover = resolveMediaUrl(p.images.find((img) => img.isCover)?.url || p.images[0]?.url);
                   return (
                     <tr key={p.id} className="hover:bg-white/5 transition">
                       {/* Foto e Nome */}
@@ -316,7 +350,7 @@ export const AdminProducts: React.FC = () => {
                               setActiveProductForPhotos(p);
                               setPhotosModalOpen(true);
                             }}
-                            title="Fotos do Produto"
+                            title="Gerenciar Fotos da Bateria"
                             className="p-1.5 rounded-lg bg-estrela-card hover:bg-white/10 text-estrela-gray-400 hover:text-white"
                           >
                             <Image className="w-3.5 h-3.5" />
@@ -334,20 +368,60 @@ export const AdminProducts: React.FC = () => {
                             <Edit className="w-3.5 h-3.5" />
                           </button>
 
-                          {/* Arquivar */}
+                          {/* Reativar (caso arquivado) */}
+                          {p.status === 'archived' && (
+                            <button
+                              onClick={() => {
+                                toast.confirm({
+                                  title: 'Reativar Bateria',
+                                  message: `Deseja reativar a bateria "${p.name}" para voltar a ser exibida no catálogo?`,
+                                  confirmText: 'Reativar Bateria',
+                                  isDanger: false,
+                                  onConfirm: () => restoreMutation.mutateAsync(p.id),
+                                });
+                              }}
+                              title="Reativar no Catálogo"
+                              className="p-1.5 rounded-lg bg-estrela-card hover:bg-emerald-950 text-emerald-400"
+                            >
+                              <RotateCcw className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+
+                          {/* Arquivar (se ativo ou rascunho) */}
                           {p.status !== 'archived' && (
                             <button
                               onClick={() => {
-                                if (confirm(`Deseja arquivar a bateria "${p.name}"?`)) {
-                                  archiveMutation.mutate(p.id);
-                                }
+                                toast.confirm({
+                                  title: 'Arquivar Bateria',
+                                  message: `Deseja desativar "${p.name}" do catálogo público? Você poderá reativá-la quando quiser.`,
+                                  confirmText: 'Arquivar',
+                                  isDanger: false,
+                                  onConfirm: () => archiveMutation.mutateAsync(p.id),
+                                });
                               }}
-                              title="Arquivar Produto"
-                              className="p-1.5 rounded-lg bg-estrela-card hover:bg-red-950 text-red-400"
+                              title="Desativar / Arquivar Bateria"
+                              className="p-1.5 rounded-lg bg-estrela-card hover:bg-amber-950 text-amber-400"
                             >
-                              <Trash2 className="w-3.5 h-3.5" />
+                              <Archive className="w-3.5 h-3.5" />
                             </button>
                           )}
+
+                          {/* Excluir Definitivamente */}
+                          <button
+                            onClick={() => {
+                              toast.confirm({
+                                title: 'Excluir Bateria Definitivamente',
+                                message: `Tem certeza que deseja excluir permanentemente "${p.name}"? Esta ação removerá a bateria, suas fotos e compatibilidades do banco de dados.`,
+                                confirmText: 'Excluir Definitivamente',
+                                isDanger: true,
+                                onConfirm: () => deletePermanentMutation.mutateAsync(p.id),
+                              });
+                            }}
+                            title="Excluir Definitivamente do Sistema"
+                            className="p-1.5 rounded-lg bg-estrela-card hover:bg-red-950 text-red-400"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -496,6 +570,7 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
     product?.categories?.map((c) => c.id) || []
   );
 
+  const toast = useToast();
   const [saving, setSaving] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -529,15 +604,18 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
           method: 'PUT',
           body: JSON.stringify(payload),
         });
+        toast.success('Bateria atualizada com sucesso!');
       } else {
         await apiFetch('/admin/products', {
           method: 'POST',
           body: JSON.stringify(payload),
         });
+        toast.success('Bateria cadastrada com sucesso!');
       }
       onSuccess();
     } catch (err: any) {
       setErrorMsg(err.message || 'Falha ao salvar produto.');
+      toast.error('Erro ao salvar produto', err.message || 'Verifique os dados informados.');
     } finally {
       setSaving(false);
     }
@@ -819,6 +897,7 @@ interface ProductPhotosModalProps {
 }
 
 const ProductPhotosModal: React.FC<ProductPhotosModalProps> = ({ product, onClose, onSuccess }) => {
+  const toast = useToast();
   const [images, setImages] = useState(product.images || []);
   const [uploading, setUploading] = useState(false);
 
@@ -840,12 +919,16 @@ const ProductPhotosModal: React.FC<ProductPhotosModalProps> = ({ product, onClos
         body: formData,
       });
 
-      if (!res.ok) throw new Error('Falha no upload');
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Falha no upload da foto');
+      }
       const data = await res.json();
       setImages([...images, data.image]);
       onSuccess();
-    } catch {
-      alert('Erro ao enviar imagem. Verifique se o arquivo tem até 5MB.');
+      toast.success('Foto enviada com sucesso!');
+    } catch (err: any) {
+      toast.error('Erro no envio da foto', err.message || 'Verifique se o arquivo tem até 5MB.');
     } finally {
       setUploading(false);
     }
@@ -859,22 +942,27 @@ const ProductPhotosModal: React.FC<ProductPhotosModalProps> = ({ product, onClos
       });
       setImages(images.map((img) => ({ ...img, isCover: img.id === imageId })));
       onSuccess();
+      toast.success('Capa atualizada com sucesso!');
     } catch {
-      alert('Erro ao definir foto de capa.');
+      toast.error('Erro ao definir foto de capa.');
     }
   };
 
-  const handleDeleteImage = async (imageId: string) => {
-    if (!confirm('Deseja excluir esta imagem?')) return;
-    try {
-      await apiFetch(`/admin/products/${product.id}/images/${imageId}`, {
-        method: 'DELETE',
-      });
-      setImages(images.filter((img) => img.id !== imageId));
-      onSuccess();
-    } catch {
-      alert('Erro ao remover imagem.');
-    }
+  const handleDeleteImage = (imageId: string) => {
+    toast.confirm({
+      title: 'Excluir Foto',
+      message: 'Tem certeza que deseja remover esta foto do produto?',
+      confirmText: 'Excluir Foto',
+      isDanger: true,
+      onConfirm: async () => {
+        await apiFetch(`/admin/products/${product.id}/images/${imageId}`, {
+          method: 'DELETE',
+        });
+        setImages(images.filter((img) => img.id !== imageId));
+        onSuccess();
+        toast.success('Foto removida!');
+      },
+    });
   };
 
   return (
@@ -912,7 +1000,7 @@ const ProductPhotosModal: React.FC<ProductPhotosModalProps> = ({ product, onClos
               key={img.id}
               className="relative aspect-square rounded-xl bg-estrela-card overflow-hidden border border-white/10 group"
             >
-              <img src={img.url} alt="" className="w-full h-full object-cover" />
+              <img src={resolveMediaUrl(img.url)} alt="" className="w-full h-full object-cover" />
 
               {img.isCover && (
                 <span className="absolute top-2 left-2 bg-estrela-red text-white text-[10px] font-bold px-2 py-0.5 rounded shadow">
@@ -963,6 +1051,7 @@ interface ProductCompatModalProps {
 }
 
 const ProductCompatModal: React.FC<ProductCompatModalProps> = ({ product, onClose, onSuccess }) => {
+  const toast = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedVariantId, setSelectedVariantId] = useState('');
   const [notes, setNotes] = useState('');
@@ -998,23 +1087,29 @@ const ProductCompatModal: React.FC<ProductCompatModalProps> = ({ product, onClos
       setNotes('');
       refetch();
       onSuccess();
+      toast.success('Veículo vinculado com sucesso!');
     } catch {
-      alert('Falha ao adicionar compatibilidade.');
+      toast.error('Falha ao adicionar compatibilidade.');
     } finally {
       setAdding(false);
     }
   };
 
-  const handleRemove = async (variantId: string) => {
-    try {
-      await apiFetch(`/admin/products/${product.id}/compatibilities/${variantId}`, {
-        method: 'DELETE',
-      });
-      refetch();
-      onSuccess();
-    } catch {
-      alert('Falha ao desvincular veículo.');
-    }
+  const handleRemove = (variantId: string) => {
+    toast.confirm({
+      title: 'Desvincular Veículo',
+      message: 'Deseja remover a compatibilidade deste veículo com esta bateria?',
+      confirmText: 'Desvincular',
+      isDanger: true,
+      onConfirm: async () => {
+        await apiFetch(`/admin/products/${product.id}/compatibilities/${variantId}`, {
+          method: 'DELETE',
+        });
+        refetch();
+        onSuccess();
+        toast.success('Veículo desvinculado!');
+      },
+    });
   };
 
   const currentCompats = productDetail?.product?.compatibilities || [];

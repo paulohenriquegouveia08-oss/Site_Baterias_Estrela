@@ -5,6 +5,7 @@ import { WhatsAppIcon } from './WhatsAppIcon';
 import { PublicProduct, buildWhatsAppProductMessage, buildWhatsAppLink, formatWarrantyLabel, formatTechnologyLabel } from '@baterias-estrela/shared';
 import { useSite } from '../../contexts/SiteContext';
 import { handleWhatsAppClick } from '../../lib/analytics';
+import { resolveMediaUrl } from '../../lib/media';
 
 interface ProductCardProps {
   product: PublicProduct;
@@ -14,8 +15,9 @@ interface ProductCardProps {
 export const ProductCard: React.FC<ProductCardProps> = ({ product, vehicleName }) => {
   const { defaultWhatsApp } = useSite();
 
-  const coverImage = product.images?.find((img) => img.isCover)?.url || product.images?.[0]?.url;
-  const hasValidImage = coverImage && !coverImage.includes('unsplash');
+  const rawCover = product.images?.find((img) => img.isCover)?.url || product.images?.[0]?.url;
+  const coverImage = resolveMediaUrl(rawCover);
+  const hasValidImage = Boolean(coverImage && !coverImage.includes('unsplash'));
 
   const onConsultWhatsApp = (e: React.MouseEvent) => {
     e.preventDefault();

@@ -4,9 +4,11 @@ import { apiFetch } from '../../lib/api';
 import { PublicContactChannel, formatPhoneNumber } from '@baterias-estrela/shared';
 import { BatteryLoader } from '../../components/common/BatteryLoader';
 import { Phone, Plus, Edit, Trash2, X, MessageCircle, Star, CheckCircle2 } from 'lucide-react';
+import { useToast } from '../../contexts/ToastContext';
 
 export const AdminContacts: React.FC = () => {
   const queryClient = useQueryClient();
+  const toast = useToast();
   const [modalOpen, setModalOpen] = useState(false);
   const [editingContact, setEditingContact] = useState<PublicContactChannel | null>(null);
 
@@ -177,9 +179,13 @@ export const AdminContacts: React.FC = () => {
                       </button>
                       <button
                         onClick={() => {
-                          if (confirm(`Remover canal "${c.label}"?`)) {
-                            deleteMutation.mutate(c.id);
-                          }
+                          toast.confirm({
+                            title: 'Remover Canal de Contato',
+                            message: `Deseja realmente remover o canal "${c.label}"?`,
+                            confirmText: 'Remover Canal',
+                            isDanger: true,
+                            onConfirm: () => deleteMutation.mutateAsync(c.id),
+                          });
                         }}
                         className="p-1.5 rounded-lg bg-estrela-card text-red-400 hover:text-white"
                       >

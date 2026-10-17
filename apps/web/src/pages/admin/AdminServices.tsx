@@ -4,9 +4,11 @@ import { apiFetch } from '../../lib/api';
 import { PublicService } from '@baterias-estrela/shared';
 import { BatteryLoader } from '../../components/common/BatteryLoader';
 import { Wrench, Plus, Edit, Trash2, X, CheckCircle2 } from 'lucide-react';
+import { useToast } from '../../contexts/ToastContext';
 
 export const AdminServices: React.FC = () => {
   const queryClient = useQueryClient();
+  const toast = useToast();
   const [modalOpen, setModalOpen] = useState(false);
   const [editingService, setEditingService] = useState<PublicService | null>(null);
 
@@ -161,9 +163,13 @@ export const AdminServices: React.FC = () => {
                       </button>
                       <button
                         onClick={() => {
-                          if (confirm(`Remover serviço "${srv.name}"?`)) {
-                            deleteMutation.mutate(srv.id);
-                          }
+                          toast.confirm({
+                            title: 'Remover Serviço',
+                            message: `Deseja realmente remover o serviço "${srv.name}"?`,
+                            confirmText: 'Remover Serviço',
+                            isDanger: true,
+                            onConfirm: () => deleteMutation.mutateAsync(srv.id),
+                          });
                         }}
                         className="p-1.5 rounded-lg bg-estrela-card text-red-400 hover:text-white"
                       >

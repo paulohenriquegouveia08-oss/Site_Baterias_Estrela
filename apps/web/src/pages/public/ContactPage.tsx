@@ -4,6 +4,7 @@ import { apiFetch } from '../../lib/api';
 import { formatPhoneNumber, buildTelLink, buildWhatsAppLink } from '@baterias-estrela/shared';
 import { trackEvent, handleWhatsAppClick, handlePhoneClick } from '../../lib/analytics';
 import { WhatsAppIcon } from '../../components/common/WhatsAppIcon';
+import { useToast } from '../../contexts/ToastContext';
 import {
   MapPin,
   Phone,
@@ -15,6 +16,7 @@ import {
 
 export const ContactPage: React.FC = () => {
   const { settings, contacts } = useSite();
+  const toast = useToast();
 
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -37,8 +39,9 @@ export const ContactPage: React.FC = () => {
         body: JSON.stringify({ name, phone, notes }),
       });
       setSubmitted(true);
+      toast.success('Mensagem enviada com sucesso!', 'Nossa equipe responderá em breve.');
     } catch {
-      alert('Falha ao enviar mensagem. Por favor, tente pelo WhatsApp.');
+      toast.error('Falha ao enviar mensagem', 'Por favor, tente entrar em contato pelo nosso WhatsApp.');
     } finally {
       setSubmitting(false);
     }

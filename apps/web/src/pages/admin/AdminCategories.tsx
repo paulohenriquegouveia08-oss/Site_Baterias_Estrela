@@ -4,9 +4,11 @@ import { apiFetch } from '../../lib/api';
 import { PublicCategory } from '@baterias-estrela/shared';
 import { BatteryLoader } from '../../components/common/BatteryLoader';
 import { Layers, Plus, Edit, Trash2, X } from 'lucide-react';
+import { useToast } from '../../contexts/ToastContext';
 
 export const AdminCategories: React.FC = () => {
   const queryClient = useQueryClient();
+  const toast = useToast();
   const [modalOpen, setModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<PublicCategory | null>(null);
 
@@ -130,9 +132,13 @@ export const AdminCategories: React.FC = () => {
                       </button>
                       <button
                         onClick={() => {
-                          if (confirm(`Excluir categoria "${cat.name}"?`)) {
-                            deleteMutation.mutate(cat.id);
-                          }
+                          toast.confirm({
+                            title: 'Excluir Categoria',
+                            message: `Deseja realmente excluir a categoria "${cat.name}"?`,
+                            confirmText: 'Excluir Categoria',
+                            isDanger: true,
+                            onConfirm: () => deleteMutation.mutateAsync(cat.id),
+                          });
                         }}
                         className="p-1.5 rounded-lg bg-estrela-card text-red-400 hover:text-white"
                       >

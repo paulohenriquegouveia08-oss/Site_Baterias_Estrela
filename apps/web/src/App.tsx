@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Outlet, Navigate } from 'react-router-dom
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { SiteProvider } from './contexts/SiteContext';
 import { AuthProvider } from './contexts/AuthContext';
+import { ToastProvider } from './contexts/ToastContext';
 
 // Layouts e Componentes Globais
 import { Header } from './components/common/Header';
@@ -58,39 +59,41 @@ export const App: React.FC = () => {
     <QueryClientProvider client={queryClient}>
       <SiteProvider>
         <AuthProvider>
-          <BrowserRouter>
-            <Routes>
-              {/* Rotas Públicas da Loja */}
-              <Route element={<PublicLayout />}>
-                <Route path="/" element={<Home />} />
-                <Route path="/baterias" element={<Catalog />} />
-                <Route path="/baterias/:slug" element={<ProductDetail />} />
-                <Route path="/encontrar-bateria" element={<VehicleFinderPage />} />
-                <Route path="/servicos" element={<ServicesPage />} />
-                <Route path="/socorro" element={<RescuePage />} />
-                <Route path="/contato" element={<ContactPage />} />
-                <Route path="/privacidade" element={<PrivacyPage />} />
-                <Route path="*" element={<NotFound />} />
-              </Route>
+          <ToastProvider>
+            <BrowserRouter>
+              <Routes>
+                {/* Rotas Públicas da Loja */}
+                <Route element={<PublicLayout />}>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/baterias" element={<Catalog />} />
+                  <Route path="/baterias/:slug" element={<ProductDetail />} />
+                  <Route path="/encontrar-bateria" element={<VehicleFinderPage />} />
+                  <Route path="/servicos" element={<ServicesPage />} />
+                  <Route path="/socorro" element={<RescuePage />} />
+                  <Route path="/contato" element={<ContactPage />} />
+                  <Route path="/privacidade" element={<PrivacyPage />} />
+                  <Route path="*" element={<NotFound />} />
+                </Route>
 
-              {/* Login do Administrador */}
-              <Route path="/admin/login" element={<AdminLogin />} />
+                {/* Login do Administrador */}
+                <Route path="/admin/login" element={<AdminLogin />} />
 
-              {/* Área Administrativa Protegida */}
-              <Route path="/admin" element={<AdminLayout />}>
-                <Route index element={<Navigate to="/admin/dashboard" replace />} />
-                <Route path="dashboard" element={<AdminDashboard />} />
-                <Route path="produtos" element={<AdminProducts />} />
-                <Route path="categorias" element={<AdminCategories />} />
-                <Route path="veiculos" element={<AdminVehicles />} />
-                <Route path="servicos" element={<AdminServices />} />
-                <Route path="contatos" element={<AdminContacts />} />
-                <Route path="solicitacoes" element={<AdminServiceRequests />} />
-                <Route path="configuracoes" element={<AdminSettings />} />
-                <Route path="auditoria" element={<AdminAuditLogs />} />
-              </Route>
-            </Routes>
-          </BrowserRouter>
+                {/* Área Administrativa Protegida */}
+                <Route path="/admin" element={<AdminLayout />}>
+                  <Route index element={<Navigate to="/admin/dashboard" replace />} />
+                  <Route path="dashboard" element={<AdminDashboard />} />
+                  <Route path="produtos" element={<AdminProducts />} />
+                  <Route path="categorias" element={<AdminCategories />} />
+                  <Route path="veiculos" element={<AdminVehicles />} />
+                  <Route path="servicos" element={<AdminServices />} />
+                  <Route path="contatos" element={<AdminContacts />} />
+                  <Route path="solicitacoes" element={<AdminServiceRequests />} />
+                  <Route path="configuracoes" element={<AdminSettings />} />
+                  <Route path="auditoria" element={<AdminAuditLogs />} />
+                </Route>
+              </Routes>
+            </BrowserRouter>
+          </ToastProvider>
         </AuthProvider>
       </SiteProvider>
     </QueryClientProvider>

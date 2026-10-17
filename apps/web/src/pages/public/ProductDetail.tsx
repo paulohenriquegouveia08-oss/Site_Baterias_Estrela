@@ -16,6 +16,7 @@ import { ProductCard } from '../../components/common/ProductCard';
 import { useSite } from '../../contexts/SiteContext';
 import { trackEvent, handleWhatsAppClick } from '../../lib/analytics';
 import { WhatsAppIcon } from '../../components/common/WhatsAppIcon';
+import { resolveMediaUrl } from '../../lib/media';
 import {
   Zap,
   Shield,
@@ -89,8 +90,9 @@ export const ProductDetail: React.FC = () => {
     );
   }
 
-  const activeImage = product.images[activeImageIndex]?.url || product.images[0]?.url;
-  const hasValidImage = activeImage && !activeImage.includes('unsplash');
+  const rawActive = product.images[activeImageIndex]?.url || product.images[0]?.url;
+  const activeImage = resolveMediaUrl(rawActive);
+  const hasValidImage = Boolean(activeImage && !activeImage.includes('unsplash'));
 
   const onConsultWhatsApp = () => {
     const msg = buildWhatsAppProductMessage({
@@ -171,7 +173,7 @@ export const ProductDetail: React.FC = () => {
                     activeImageIndex === idx ? 'border-estrela-red scale-105' : 'border-white/10 opacity-60 hover:opacity-100'
                   }`}
                 >
-                  <img src={img.url} alt={img.altText || product.name} className="w-full h-full object-cover" />
+                  <img src={resolveMediaUrl(img.url)} alt={img.altText || product.name} className="w-full h-full object-cover" />
                 </button>
               ))}
             </div>

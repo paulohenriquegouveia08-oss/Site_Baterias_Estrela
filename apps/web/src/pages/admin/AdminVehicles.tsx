@@ -8,9 +8,11 @@ import {
 } from '@baterias-estrela/shared';
 import { BatteryLoader } from '../../components/common/BatteryLoader';
 import { Car, Plus, Download, Upload, Trash2, Search } from 'lucide-react';
+import { useToast } from '../../contexts/ToastContext';
 
 export const AdminVehicles: React.FC = () => {
   const queryClient = useQueryClient();
+  const toast = useToast();
   const [tab, setTab] = useState<'variants' | 'makes' | 'models'>('variants');
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -94,8 +96,9 @@ export const AdminVehicles: React.FC = () => {
       document.body.appendChild(a);
       a.click();
       a.remove();
+      toast.success('Download concluído', 'Arquivo CSV de veículos gerado.');
     } catch {
-      alert('Falha ao exportar CSV.');
+      toast.error('Erro na exportação', 'Falha ao exportar CSV de veículos.');
     }
   };
 
@@ -121,8 +124,9 @@ export const AdminVehicles: React.FC = () => {
       queryClient.invalidateQueries({ queryKey: ['admin-variants'] });
       queryClient.invalidateQueries({ queryKey: ['admin-models'] });
       queryClient.invalidateQueries({ queryKey: ['admin-makes'] });
+      toast.success('CSV importado com sucesso!');
     } catch {
-      alert('Erro no envio do CSV.');
+      toast.error('Erro no envio do CSV', 'Verifique a formatação do arquivo.');
     } finally {
       setImporting(false);
     }
@@ -257,9 +261,13 @@ export const AdminVehicles: React.FC = () => {
                       <td className="py-3 px-4 text-right">
                         <button
                           onClick={() => {
-                            if (confirm(`Remover versão "${v.name}"?`)) {
-                              deleteVariantMutation.mutate(v.id);
-                            }
+                            toast.confirm({
+                              title: 'Remover Versão do Veículo',
+                              message: `Deseja realmente remover a versão "${v.name}"?`,
+                              confirmText: 'Remover Versão',
+                              isDanger: true,
+                              onConfirm: () => deleteVariantMutation.mutateAsync(v.id),
+                            });
                           }}
                           className="p-1 rounded text-red-400 hover:bg-white/10"
                         >

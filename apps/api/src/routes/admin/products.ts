@@ -205,9 +205,37 @@ export async function adminProductsRoutes(app: FastifyInstance) {
     return reply.send({ product: updated });
   });
 
-  // Arquivar / Soft delete produto
+  // Excluir ou Arquivar Produto
   app.delete('/:id', { preHandler: [app.authenticate] }, async (request, reply) => {
     const { id } = request.params as { id: string };
+    const { permanent } = request.query as { permanent?: string };
+
+    const product = await prisma.product.findUnique({
+      where: { id },
+      include: { images: true },
+    });
+
+    if (!product) {
+      return reply.status(404).send({ error: 'Produto não encontrado' });
+    }
+
+    if (permanent === 'true' || permanent === '1') {
+      // Exclui arquivos físicos das imagens vinculadas
+      for (const img of product.images) {
+        if (img.fileKey) {
+          try {
+            await deleteFile(img.fileKey);
+          } catch (err) {
+            console.warn(`Não foi possível remover arquivo ${img.fileKey}:`, err);
+          }
+        }
+      }
+
+      await prisma.product.delete({ where: { id } });
+      await app.logAudit('DELETE', 'Product', id, { name: product.name, sku: product.sku }, request);
+
+      return reply.send({ message: 'Produto excluído permanentemente com sucesso' });
+    }
 
     const archived = await prisma.product.update({
       where: { id },
@@ -220,6 +248,28 @@ export async function adminProductsRoutes(app: FastifyInstance) {
     await app.logAudit('ARCHIVE', 'Product', id, { name: archived.name }, request);
 
     return reply.send({ message: 'Produto arquivado com sucesso' });
+  });
+
+  // Restaurar / Reativar Produto Arquivado
+  app.post('/:id/restore', { preHandler: [app.authenticate] }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+
+    const product = await prisma.product.findUnique({ where: { id } });
+    if (!product) {
+      return reply.status(404).send({ error: 'Produto não encontrado' });
+    }
+
+    const restored = await prisma.product.update({
+      where: { id },
+      data: {
+        status: 'active',
+        deletedAt: null,
+      },
+    });
+
+    await app.logAudit('RESTORE', 'Product', id, { name: restored.name }, request);
+
+    return reply.send({ message: 'Produto reativado com sucesso', product: restored });
   });
 
   // Upload de Imagem de Produto

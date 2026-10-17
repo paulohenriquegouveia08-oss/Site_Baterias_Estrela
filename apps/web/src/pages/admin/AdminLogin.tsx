@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { apiFetch } from '../../lib/api';
-import { Zap, Lock, Mail, AlertTriangle, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Lock, Mail, AlertTriangle, ArrowRight, ShieldCheck } from 'lucide-react';
 
 export const AdminLogin: React.FC = () => {
   const navigate = useNavigate();
@@ -56,17 +56,23 @@ export const AdminLogin: React.FC = () => {
   return (
     <div className="min-h-screen bg-estrela-black flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-6">
-        {/* Identificação da Loja */}
-        <div className="text-center space-y-2">
-          <div className="w-14 h-14 rounded-2xl bg-estrela-dark border border-white/10 flex items-center justify-center text-estrela-red mx-auto shadow-2xl">
-            <Zap className="w-8 h-8 fill-current" />
+        {/* Identificação da Loja com a Logo Oficial */}
+        <div className="text-center space-y-3">
+          <Link to="/" className="inline-block transition-transform hover:scale-105" title="Voltar ao site público">
+            <img
+              src="/logo.png"
+              alt="Baterias Estrela Mendes"
+              className="h-16 sm:h-20 w-auto mx-auto object-contain drop-shadow-2xl"
+            />
+          </Link>
+          <div>
+            <h1 className="text-lg font-bold text-white tracking-tight">
+              Painel Administrativo
+            </h1>
+            <p className="text-xs text-estrela-gray-400">
+              Acesso restrito para gestão comercial e operacional
+            </p>
           </div>
-          <h1 className="text-2xl font-black text-white tracking-tight uppercase">
-            Baterias <span className="text-estrela-red">Estrela</span>
-          </h1>
-          <p className="text-xs text-estrela-gray-400">
-            Painel Administrativo Restrito
-          </p>
         </div>
 
         {/* Card de Login */}

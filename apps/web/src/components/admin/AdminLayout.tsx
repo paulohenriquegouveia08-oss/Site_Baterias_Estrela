@@ -14,7 +14,6 @@ import {
   ShieldCheck,
   LogOut,
   ExternalLink,
-  Zap,
 } from 'lucide-react';
 
 export const AdminLayout: React.FC = () => {
@@ -51,16 +50,18 @@ export const AdminLayout: React.FC = () => {
       <aside className="w-full md:w-64 bg-estrela-dark border-r border-estrela-card flex flex-col justify-between shrink-0">
         <div>
           {/* Logo e Identificação */}
-          <div className="p-5 border-b border-estrela-card flex items-center justify-between">
-            <Link to="/admin/dashboard" className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-lg bg-estrela-black border border-white/10 flex items-center justify-center">
-                <Zap className="w-5 h-5 text-estrela-red fill-estrela-red" />
-              </div>
+          <div className="p-4 border-b border-estrela-card flex items-center justify-between">
+            <Link to="/admin/dashboard" className="flex items-center gap-3">
+              <img
+                src="/logo.png"
+                alt="Baterias Estrela Mendes"
+                className="h-10 w-auto object-contain"
+              />
               <div>
-                <span className="font-extrabold text-sm uppercase tracking-tight block">
-                  Estrela <span className="text-estrela-red">Admin</span>
+                <span className="font-extrabold text-xs uppercase tracking-tight block">
+                  Painel <span className="text-estrela-red">Admin</span>
                 </span>
-                <span className="text-[10px] text-estrela-gray-400 block -mt-0.5">Painel de Gestão</span>
+                <span className="text-[10px] text-estrela-gray-400 block -mt-0.5">Gestão da Loja</span>
               </div>
             </Link>
           </div>

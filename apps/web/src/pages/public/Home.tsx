@@ -7,6 +7,7 @@ import { ProductCard } from '../../components/common/ProductCard';
 import { VehicleFinderWidget } from '../../components/common/VehicleFinderWidget';
 import { BatteryLoader } from '../../components/common/BatteryLoader';
 import { WhatsAppIcon } from '../../components/common/WhatsAppIcon';
+import { BatteryTypeIcon } from '../../components/common/BatteryTypeIcon';
 import { useSite } from '../../contexts/SiteContext';
 import { trackEvent, handleWhatsAppClick } from '../../lib/analytics';
 import {
@@ -68,7 +69,7 @@ export const Home: React.FC = () => {
             </h1>
 
             <p className="text-base sm:text-lg text-estrela-gray-300 leading-relaxed font-normal">
-              Trabalhamos com marcas consagradas como <strong>Moura</strong>, <strong>Heliar</strong>, <strong>Bralmax</strong> e <strong>Zetta</strong>. 
+              Trabalhamos com as marcas mais conhecidas e confiáveis da região como <strong>Moura</strong>, <strong>Zetta</strong>, <strong>Heliar</strong>, <strong>Pioneiro</strong>, <strong>Eletran</strong>, entre muitas outras. 
               Entrega e instalação gratuita em Arapongas com teste de carga e preservação da memória de bordo.
             </p>
 
@@ -167,7 +168,9 @@ export const Home: React.FC = () => {
                 className="group p-5 rounded-xl bg-estrela-dark border border-white/10 hover:border-estrela-red/50 transition flex flex-col justify-between"
               >
                 <div>
-                  <Zap className="w-5 h-5 text-estrela-red mb-2" />
+                  <div className="h-10 flex items-center mb-3">
+                    <BatteryTypeIcon type={cat.slug || cat.name} />
+                  </div>
                   <h3 className="text-base font-bold text-white group-hover:text-estrela-red transition">
                     {cat.name}
                   </h3>

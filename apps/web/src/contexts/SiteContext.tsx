@@ -25,7 +25,7 @@ const defaultSettings: PublicSiteSettings = {
   workingHours: 'Segunda a Sexta: 08h às 18h | Sábado: 08h às 12h30',
   email: 'contato@bateriasestrela.com.br',
   homeHeroTitle: 'A Bateria Certa para o seu Veículo com Entrega e Instalação Grátis em Arapongas',
-  homeHeroSubtitle: 'Trabalhamos com marcas consagradas como Moura, Heliar, Bralmax e Zetta. Socorro rápido, diagnóstico gratuito e garantia de fábrica.',
+  homeHeroSubtitle: 'Trabalhamos com marcas consagradas na região como Moura, Zetta, Heliar, Pioneiro e Eletran, entre muitas outras. Socorro de bateria, diagnóstico gratuito e garantia de fábrica.',
 };
 
 const SiteContext = createContext<SiteContextData>({

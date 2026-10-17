@@ -38,7 +38,7 @@ export const Footer: React.FC = () => {
             <ShieldCheck className="w-6 h-6 text-emerald-400 shrink-0" />
             <div>
               <h4 className="text-white font-bold text-sm">Garantia Nacional das Fabricantes</h4>
-              <p className="text-xs text-estrela-gray-400">Baterias originais Moura, Heliar, Bralmax e Zetta com nota e garantia.</p>
+              <p className="text-xs text-estrela-gray-400">Baterias originais Moura, Zetta, Heliar, Pioneiro, Eletran e multimarcas com procedência e garantia.</p>
             </div>
           </div>
 

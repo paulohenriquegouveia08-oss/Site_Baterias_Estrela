@@ -106,7 +106,7 @@ export const Catalog: React.FC = () => {
     setSearchParams(new URLSearchParams());
   };
 
-  const brands = ['Moura', 'Heliar', 'Bralmax', 'Zetta', 'Cral'];
+  const brands = ['Moura', 'Zetta', 'Heliar', 'Pioneiro', 'Eletran', 'Bralmax', 'Cral'];
   const amperages = [
     { label: 'Todas as capacidades', min: '', max: '' },
     { label: '40 a 50 Ah (Compactos)', min: '40', max: '50' },

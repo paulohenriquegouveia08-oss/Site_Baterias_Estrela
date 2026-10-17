@@ -8,16 +8,16 @@ export interface BrandItem {
 }
 
 export const OFFICIAL_BRANDS: BrandItem[] = [
-  { id: 'moura', name: 'Baterias Moura', logo: '/brands/moura.png', heightClass: 'h-10 sm:h-12' },
-  { id: 'zetta', name: 'Baterias Zetta', logo: '/brands/zetta.png', heightClass: 'h-9 sm:h-11' },
-  { id: 'heliar', name: 'Baterias Heliar', logo: '/brands/heliar.png', heightClass: 'h-8 sm:h-10' },
-  { id: 'pioneiro', name: 'Pioneiro Baterias', logo: '/brands/pioneiro.png', heightClass: 'h-8 sm:h-9' },
-  { id: 'eletran', name: 'Baterias Eletran', logo: '/brands/eletran.png', heightClass: 'h-9 sm:h-11' },
-  { id: 'kondor', name: 'Baterias Kondor', logo: '/brands/kondor.png', heightClass: 'h-8 sm:h-10' },
-  { id: 'tudor', name: 'Tudor Baterias', logo: '/brands/tudor.png', heightClass: 'h-7 sm:h-9' },
-  { id: 'suprema', name: 'Suprema Baterias', logo: '/brands/suprema.png', heightClass: 'h-9 sm:h-11' },
-  { id: 'varta', name: 'Baterias Varta', logo: '/brands/varta.png', heightClass: 'h-8 sm:h-10' },
-  { id: 'haizer', name: 'Haizer Baterias', logo: '/brands/haizer.png', heightClass: 'h-9 sm:h-11' },
+  { id: 'moura', name: 'Baterias Moura', logo: '/brands/moura.webp', heightClass: 'h-10 sm:h-12' },
+  { id: 'zetta', name: 'Baterias Zetta', logo: '/brands/zetta.webp', heightClass: 'h-9 sm:h-11' },
+  { id: 'heliar', name: 'Baterias Heliar', logo: '/brands/heliar.webp', heightClass: 'h-8 sm:h-10' },
+  { id: 'pioneiro', name: 'Pioneiro Baterias', logo: '/brands/pioneiro.webp', heightClass: 'h-8 sm:h-9' },
+  { id: 'eletran', name: 'Baterias Eletran', logo: '/brands/eletran.webp', heightClass: 'h-9 sm:h-11' },
+  { id: 'kondor', name: 'Baterias Kondor', logo: '/brands/kondor.webp', heightClass: 'h-8 sm:h-10' },
+  { id: 'tudor', name: 'Tudor Baterias', logo: '/brands/tudor.webp', heightClass: 'h-7 sm:h-9' },
+  { id: 'suprema', name: 'Suprema Baterias', logo: '/brands/suprema.webp', heightClass: 'h-9 sm:h-11' },
+  { id: 'varta', name: 'Baterias Varta', logo: '/brands/varta.webp', heightClass: 'h-8 sm:h-10' },
+  { id: 'haizer', name: 'Haizer Baterias', logo: '/brands/haizer.webp', heightClass: 'h-9 sm:h-11' },
 ];
 
 export const BrandMarquee: React.FC = () => {
@@ -52,6 +52,7 @@ export const BrandMarquee: React.FC = () => {
                 alt={brand.name}
                 className={`${brand.heightClass || 'h-9 sm:h-11'} w-auto object-contain max-w-[150px] sm:max-w-[180px] drop-shadow-md`}
                 loading="lazy"
+                decoding="async"
               />
             </div>
           ))}

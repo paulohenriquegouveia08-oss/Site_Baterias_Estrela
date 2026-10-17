@@ -58,9 +58,13 @@ export const Footer: React.FC = () => {
         <div className="space-y-4">
           <Link to="/" className="inline-block">
             <img
-              src="/logo.png"
+              src="/logo.webp"
               alt="Baterias Estrela Mendes"
               className="h-12 w-auto object-contain"
+              width="200"
+              height="48"
+              loading="lazy"
+              decoding="async"
             />
           </Link>
           <p className="text-xs text-estrela-gray-400 leading-relaxed">

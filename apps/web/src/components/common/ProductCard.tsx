@@ -49,6 +49,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, vehicleName }
             alt={product.name}
             className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
             loading="lazy"
+            decoding="async"
           />
         ) : (
           <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-neutral-900 via-estrela-card to-neutral-950 p-6 text-center select-none group-hover:border-estrela-red/30 transition">

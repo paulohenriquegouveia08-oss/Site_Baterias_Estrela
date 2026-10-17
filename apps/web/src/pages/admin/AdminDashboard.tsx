@@ -138,9 +138,10 @@ export const AdminDashboard: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-estrela-card">
         <div className="flex items-center gap-4">
           <img
-            src="/logo.png"
+            src="/logo.webp"
             alt="Baterias Estrela Mendes"
             className="h-12 w-auto object-contain shrink-0"
+            loading="lazy"
           />
           <div>
             <h1 className="text-xl sm:text-2xl font-black text-white">Painel Baterias Estrela Mendes</h1>

@@ -60,9 +60,10 @@ export const AdminLogin: React.FC = () => {
         <div className="text-center space-y-3">
           <Link to="/" className="inline-block transition-transform hover:scale-105" title="Voltar ao site público">
             <img
-              src="/logo.png"
+              src="/logo.webp"
               alt="Baterias Estrela Mendes"
               className="h-16 sm:h-20 w-auto mx-auto object-contain drop-shadow-2xl"
+              loading="eager"
             />
           </Link>
           <div>

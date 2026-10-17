@@ -53,9 +53,10 @@ export const AdminLayout: React.FC = () => {
           <div className="p-4 border-b border-estrela-card flex items-center justify-between">
             <Link to="/admin/dashboard" className="flex items-center gap-3">
               <img
-                src="/logo.png"
+                src="/logo.webp"
                 alt="Baterias Estrela Mendes"
                 className="h-10 w-auto object-contain"
+                loading="eager"
               />
               <div>
                 <span className="font-extrabold text-xs uppercase tracking-tight block">

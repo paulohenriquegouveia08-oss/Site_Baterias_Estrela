@@ -68,9 +68,15 @@ export const Header: React.FC = () => {
         >
           <Link to="/" className="flex items-center gap-3">
             <img
-              src="/logo.png"
+              src="/logo.webp"
               alt="Baterias Estrela Mendes"
               className="h-12 sm:h-14 w-auto object-contain transition-transform hover:scale-[1.02]"
+              width="240"
+              height="56"
+              loading="eager"
+              // @ts-expect-error React standard HTML attribute
+              fetchpriority="high"
+              decoding="sync"
             />
           </Link>
         </div>

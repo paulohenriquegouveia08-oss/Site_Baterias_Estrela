@@ -41,25 +41,20 @@ export const Header: React.FC = () => {
 
   return (
     <header className="sticky top-0 z-50 bg-estrela-black border-b border-white/10 shadow-lg">
-      {/* Top Banner de Horário e Atendimento Real */}
+      {/* Top Banner de Horário e Atendimento */}
       <div className="bg-estrela-dark py-1.5 px-4 text-xs text-estrela-gray-300 border-b border-white/5">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-1">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-estrela-red animate-pulse" />
-            <span><strong>Baterias Estrela Mendes</strong> — Entrega e Instalação Grátis em Arapongas - PR</span>
-          </div>
-          <div className="flex items-center gap-4 text-[11px] sm:text-xs">
-            <span className="hidden md:inline text-estrela-gray-400">
-              Seg a Sex: 08h às 19h | Sáb: 08h às 13h
-            </span>
-            <button
-              onClick={onCallClick}
-              className="hover:text-white transition font-bold text-estrela-red flex items-center gap-1.5"
-            >
-              <Phone className="w-3 h-3" />
-              {formatPhoneNumber(headerPhone)}
-            </button>
-          </div>
+        <div className="max-w-7xl mx-auto flex justify-between sm:justify-end items-center gap-3 sm:gap-4 text-[11px] sm:text-xs">
+          <span className="text-estrela-gray-400">
+            Seg a Sex: 08h às 19h | Sáb: 08h às 13h
+          </span>
+          <span className="hidden sm:inline text-white/10">|</span>
+          <button
+            onClick={onCallClick}
+            className="hover:text-white transition font-bold text-estrela-red flex items-center gap-1.5 shrink-0"
+          >
+            <Phone className="w-3 h-3" />
+            {formatPhoneNumber(headerPhone)}
+          </button>
         </div>
       </div>
 

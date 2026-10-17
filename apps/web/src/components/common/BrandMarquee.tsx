@@ -13,11 +13,16 @@ export const OFFICIAL_BRANDS: BrandItem[] = [
   { id: 'heliar', name: 'Baterias Heliar', logo: '/brands/heliar.png', heightClass: 'h-8 sm:h-10' },
   { id: 'pioneiro', name: 'Pioneiro Baterias', logo: '/brands/pioneiro.png', heightClass: 'h-8 sm:h-9' },
   { id: 'eletran', name: 'Baterias Eletran', logo: '/brands/eletran.png', heightClass: 'h-9 sm:h-11' },
+  { id: 'kondor', name: 'Baterias Kondor', logo: '/brands/kondor.png', heightClass: 'h-8 sm:h-10' },
+  { id: 'tudor', name: 'Tudor Baterias', logo: '/brands/tudor.png', heightClass: 'h-7 sm:h-9' },
+  { id: 'suprema', name: 'Suprema Baterias', logo: '/brands/suprema.png', heightClass: 'h-9 sm:h-11' },
+  { id: 'varta', name: 'Baterias Varta', logo: '/brands/varta.png', heightClass: 'h-8 sm:h-10' },
+  { id: 'haizer', name: 'Haizer Baterias', logo: '/brands/haizer.png', heightClass: 'h-9 sm:h-11' },
 ];
 
 export const BrandMarquee: React.FC = () => {
-  // Duplicamos os itens 4 vezes para garantir transição contínua e sem quebras em telas ultrawide
-  const marqueeList = [...OFFICIAL_BRANDS, ...OFFICIAL_BRANDS, ...OFFICIAL_BRANDS, ...OFFICIAL_BRANDS];
+  // Duplicamos a lista em 2 conjuntos completos para sincronia matemática com o deslocamento -50% do CSS
+  const marqueeList = [...OFFICIAL_BRANDS, ...OFFICIAL_BRANDS];
 
   return (
     <section className="relative w-full bg-estrela-dark/80 border-y border-white/10 py-6 overflow-hidden select-none">

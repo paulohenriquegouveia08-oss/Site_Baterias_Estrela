@@ -774,67 +774,6 @@ async function main() {
     ],
   });
 
-  // 9. Eventos analíticos realistas nos últimos 7 dias para visualização imediata no Dashboard
-  console.log('📊 Gerando métricas históricas de teste para o dashboard...');
-  const now = new Date();
-  const sampleSessions = ['sess_alpha_1', 'sess_beta_2', 'sess_gamma_3', 'sess_delta_4', 'sess_zeta_5'];
-  
-  const eventsData = [];
-  for (let daysAgo = 6; daysAgo >= 0; daysAgo--) {
-    const dayDate = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000);
-
-    // page views
-    const numViews = 15 + Math.floor(Math.sin(daysAgo) * 5);
-    for (let i = 0; i < numViews; i++) {
-      eventsData.push({
-        eventType: 'page_view',
-        path: i % 3 === 0 ? '/' : i % 3 === 1 ? '/baterias' : '/encontrar-bateria',
-        sessionId: sampleSessions[i % sampleSessions.length],
-        deviceCategory: i % 2 === 0 ? 'mobile' : 'desktop',
-        referrer: i % 4 === 0 ? 'https://google.com.br' : i % 4 === 1 ? 'https://instagram.com' : null,
-        createdAt: new Date(dayDate.getTime() + i * 35 * 60 * 1000),
-      });
-    }
-
-    // whatsapp clicks
-    const numWa = 3 + (daysAgo % 3);
-    for (let w = 0; w < numWa; w++) {
-      eventsData.push({
-        eventType: 'whatsapp_click',
-        path: '/baterias/bateria-moura-60ah-m60gd',
-        productId: prodMoura60.id,
-        sessionId: sampleSessions[w % sampleSessions.length],
-        deviceCategory: 'mobile',
-        createdAt: new Date(dayDate.getTime() + w * 120 * 60 * 1000),
-      });
-    }
-
-    // phone clicks
-    if (daysAgo % 2 === 0) {
-      eventsData.push({
-        eventType: 'phone_click',
-        path: '/contato',
-        sessionId: sampleSessions[0],
-        deviceCategory: 'mobile',
-        createdAt: new Date(dayDate.getTime() + 180 * 60 * 1000),
-      });
-    }
-
-    // vehicle searches
-    eventsData.push({
-      eventType: 'vehicle_search',
-      path: '/encontrar-bateria',
-      sessionId: sampleSessions[1],
-      deviceCategory: 'mobile',
-      metadata: { make: 'Volkswagen', model: 'Gol' },
-      createdAt: new Date(dayDate.getTime() + 200 * 60 * 1000),
-    });
-  }
-
-  await prisma.analyticsEvent.createMany({
-    data: eventsData,
-  });
-
   console.log(`✨ Seed concluído com sucesso para a Baterias Estrela!`);
   console.log(`🔑 Login do Administrador: ${adminEmail}`);
   console.log(`🔑 Senha temporária: ${adminPassword}`);

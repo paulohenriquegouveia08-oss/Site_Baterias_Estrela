@@ -26,7 +26,9 @@ import {
   AlertTriangle,
   Archive,
   RotateCcw,
+  Zap,
 } from 'lucide-react';
+import { convertToOptimizedWebP, formatBytes } from '../../lib/imageOptimizer';
 
 export const AdminProducts: React.FC = () => {
   const queryClient = useQueryClient();
@@ -899,17 +901,40 @@ interface ProductPhotosModalProps {
 const ProductPhotosModal: React.FC<ProductPhotosModalProps> = ({ product, onClose, onSuccess }) => {
   const toast = useToast();
   const [images, setImages] = useState(product.images || []);
-  const [uploading, setUploading] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState<string | null>(null);
+  const [lastOptimization, setLastOptimization] = useState<{
+    originalSize: string;
+    optimizedSize: string;
+    savings: number;
+    dimensions: string;
+  } | null>(null);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setUploading(true);
-    const formData = new FormData();
-    formData.append('file', file);
-
     try {
+      setUploadStatus('Convertendo e otimizando imagem para WebP...');
+
+      // Conversão acelerada por hardware no navegador
+      const optResult = await convertToOptimizedWebP(file, {
+        maxWidth: 1200,
+        maxHeight: 1200,
+        quality: 0.82,
+      });
+
+      setLastOptimization({
+        originalSize: formatBytes(optResult.originalSize),
+        optimizedSize: formatBytes(optResult.optimizedSize),
+        savings: optResult.savingsPercent,
+        dimensions: `${optResult.width}x${optResult.height}px`,
+      });
+
+      setUploadStatus(`Enviando WebP otimizado (${formatBytes(optResult.optimizedSize)})...`);
+
+      const formData = new FormData();
+      formData.append('file', optResult.file);
+
       const res = await fetch(`${API_BASE_URL}/admin/products/${product.id}/images`, {
         method: 'POST',
         headers: {
@@ -926,11 +951,16 @@ const ProductPhotosModal: React.FC<ProductPhotosModalProps> = ({ product, onClos
       const data = await res.json();
       setImages([...images, data.image]);
       onSuccess();
-      toast.success('Foto enviada com sucesso!');
+
+      toast.success(
+        'Foto convertida para WebP e salva!',
+        `De ${formatBytes(optResult.originalSize)} para ${formatBytes(optResult.optimizedSize)} (${optResult.savingsPercent}% mais leve para o Google).`
+      );
     } catch (err: any) {
-      toast.error('Erro no envio da foto', err.message || 'Verifique se o arquivo tem até 5MB.');
+      toast.error('Erro no envio da foto', err.message || 'Verifique se o arquivo é uma imagem válida.');
     } finally {
-      setUploading(false);
+      setUploadStatus(null);
+      e.target.value = '';
     }
   };
 
@@ -981,16 +1011,47 @@ const ProductPhotosModal: React.FC<ProductPhotosModalProps> = ({ product, onClos
           </button>
         </div>
 
+        {/* Banner Explicativo do Otimizador WebP */}
+        <div className="bg-emerald-950/40 border border-emerald-500/30 rounded-xl p-3 flex items-start gap-3">
+          <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-400 shrink-0">
+            <Zap className="w-4 h-4" />
+          </div>
+          <div className="text-xs">
+            <p className="font-bold text-white flex items-center gap-2">
+              <span>Conversor WebP Automático Ativo</span>
+              <span className="bg-emerald-500/20 text-emerald-300 text-[10px] font-bold px-1.5 py-0.5 rounded border border-emerald-500/30">
+                Padrão Google
+              </span>
+            </p>
+            <p className="text-estrela-gray-300 text-[11px] mt-0.5 leading-relaxed">
+              Fotos em JPG, PNG ou tiradas diretamente do celular são automaticamente redimensionadas (máx. 1200px) e convertidas para WebP ultra-leve antes do envio, garantindo nota máxima de performance no Google.
+            </p>
+          </div>
+        </div>
+
         {/* Upload de nova foto */}
-        <div className="border-2 border-dashed border-white/10 rounded-xl p-4 text-center">
+        <div className="border-2 border-dashed border-white/10 hover:border-estrela-red/50 rounded-xl p-5 text-center transition">
           <input
             type="file"
             accept="image/*"
-            disabled={uploading}
+            disabled={!!uploadStatus}
             onChange={handleUpload}
-            className="text-xs text-estrela-gray-300 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-estrela-red file:text-white hover:file:bg-estrela-red-hover cursor-pointer"
+            className="text-xs text-estrela-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-estrela-red file:text-white hover:file:bg-estrela-red-hover cursor-pointer"
           />
-          {uploading && <p className="text-xs text-estrela-red mt-2 animate-pulse">Enviando foto...</p>}
+          {uploadStatus && (
+            <div className="mt-3 flex items-center justify-center gap-2 text-xs text-amber-400 font-semibold animate-pulse">
+              <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
+              <span>{uploadStatus}</span>
+            </div>
+          )}
+          {lastOptimization && !uploadStatus && (
+            <div className="mt-3 text-[11px] text-emerald-300 bg-emerald-900/30 border border-emerald-500/30 rounded-lg py-1.5 px-3 inline-flex items-center gap-2">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+              <span>
+                Último upload otimizado: de <strong>{lastOptimization.originalSize}</strong> para <strong>{lastOptimization.optimizedSize}</strong> ({lastOptimization.savings}% mais leve • {lastOptimization.dimensions})
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Grade de fotos existentes */}

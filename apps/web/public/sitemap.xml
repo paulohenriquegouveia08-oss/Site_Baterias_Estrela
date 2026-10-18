@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Página Inicial -->
+  <url>
+    <loc>https://site-baterias-estrela.vercel.app/</loc>
+    <lastmod>2026-10-17</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Socorro de Bateria Rápido em Arapongas -->
+  <url>
+    <loc>https://site-baterias-estrela.vercel.app/socorro</loc>
+    <lastmod>2026-10-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Catálogo de Baterias Automotivas -->
+  <url>
+    <loc>https://site-baterias-estrela.vercel.app/baterias</loc>
+    <lastmod>2026-10-17</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Buscador Veicular Inteligente -->
+  <url>
+    <loc>https://site-baterias-estrela.vercel.app/encontrar-bateria</loc>
+    <lastmod>2026-10-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Serviços Automotivos e Teste de Alternador -->
+  <url>
+    <loc>https://site-baterias-estrela.vercel.app/servicos</loc>
+    <lastmod>2026-10-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Contato e Localização em Arapongas -->
+  <url>
+    <loc>https://site-baterias-estrela.vercel.app/contato</loc>
+    <lastmod>2026-10-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Políticas de Privacidade -->
+  <url>
+    <loc>https://site-baterias-estrela.vercel.app/privacidade</loc>
+    <lastmod>2026-10-17</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+</urlset>
